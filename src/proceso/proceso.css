@@ -71,16 +71,11 @@
 .rc-valor{margin-top:4px;font-weight:700;color:#17617c}
 .rc-origen{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:12px;white-space:nowrap}
 .rc-origen--industrial{background:#e6eef7;color:#2f5f86}.rc-origen--simulador{background:#efe6f7;color:#6b3f8f}.rc-origen--cualitativo{background:#eef2ee;color:#58705c}
-.rc-cita{font-size:.7em;color:#59899c;font-weight:700}
 .rc-nota{margin:0;font-size:.88rem;color:#5e7578;line-height:1.55}
 .rc-opts{margin:6px 0 0;padding-left:18px;font-size:.88rem;color:#5e7578;line-height:1.5}
 .rc-opts b{color:#2f4b5b}.rc-opts em{color:#3e6d68;font-style:normal;font-weight:700}
-.rc-ref{margin:2px 0 0;font-size:12px;color:#68817f}
 .rc-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
 .rc-bottom small{color:#68817f}
-.rc-fuentes{margin-top:22px;background:#ffffffb0;border-radius:20px;padding:12px 18px;color:#54758a;font-size:13px;line-height:1.6}
-.rc-fuentes summary{cursor:pointer;font-weight:750;color:#245a70}
-.rc-fuentes ol{padding-left:20px}
 /* sección de transición oscura hacia el clarificador 3D (modelo: .end) */
 .rc-end{padding:clamp(60px,9vw,96px) 20px;background:#0c2132;color:#fff;text-align:center;scroll-margin-top:0}
 .rc-end .rc-eyebrow{color:#8bd0f7}
@@ -107,3 +102,7 @@
   .rc-flipper.flipped .rc-front{opacity:0}
   .rc-mol{animation:none}
 }
+/* fundido a negro hacia el clarificador 3D (fundido.js) */
+html::after{content:"";position:fixed;inset:0;background:#000;z-index:2147483000;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
+html.dcc-negro::after{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .45s ease}
+@media(prefers-reduced-motion:reduce){html::after{transition:none!important}}

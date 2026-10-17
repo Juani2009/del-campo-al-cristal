@@ -41,6 +41,12 @@ const PARCHES_08 = [
   // (b) desdeLLT: tramo de tubería que llega desde el LLT, con su brida y el rótulo «Salida del LLT»
   ['        drawPipe(xB, Pp, t);\n      }\n',
    '        drawPipe(xB, Pp, t);\n      }\n      if (opts.desdeLLT) drawSalidaLLT(xB, t);\n'],
+  // ritmo: acelera de forma suave la línea de tiempo fuera del tramo indicado (cristalización a su velocidad original).
+  // Todo (cámara, tuberías, máquinas y partículas) depende de T, así que se mantiene sincronizado y no se omite nada.
+  ['    var DUR = 137, TL_G = 54;\n',
+   '    var DUR = 137, TL_G = 54;\n    var RIT = opts.ritmo;\n    function ritmo(t) { if (!RIT) return 1; var w = sm((t - RIT.desde + RIT.rampa) / RIT.rampa) * (1 - sm((t - RIT.hasta) / RIT.rampa)); return mix(RIT.factor, 1, w); }\n'],
+  ['      T += Math.min(0.05, (ts - last) / 1000) * speed; last = ts;',
+   '      T += Math.min(0.05, (ts - last) / 1000) * speed * ritmo(T); last = ts;'],
   ['    function bbox(Pp) {',
    `    function drawSalidaLLT(x, t) {                      // tramo que viene del clarificador 3D (fuera de cuadro, a la izquierda)
       var e = pipes[0].p[0], a = [e[0] - 900, e[1]], w = pipes[0].w0, i;
@@ -87,7 +93,7 @@ function generar() {
   const html = fs.readFileSync(path.join(ORIG, '08_Animacion_Final.html'), 'utf8');
   const bloques = scripts(html);
   if (bloques.length !== 4 || !/AzucarFinal\.mount\(el/.test(bloques[3])) throw new Error('Estructura inesperada en 08_Animacion_Final.html');
-  out['08-final.js'] = cabecera('08_Animacion_Final.html', 'Incluye los cambios documentados en PARCHES_08 (opciones desdeLLT y onReady).') +
+  out['08-final.js'] = cabecera('08_Animacion_Final.html', 'Incluye los cambios documentados en PARCHES_08 (opciones desdeLLT, onReady y ritmo).') +
     aplicarParches(bloques.slice(0, 3).map(b => `;${b}\n`).join(''));
   const css = /\/\* ---- estilos del componente[\s\S]*?(?=<\/style>)/.exec(html);
   if (!css) throw new Error('No se encontró el CSS del componente en la 08');

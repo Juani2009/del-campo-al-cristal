@@ -1,13 +1,14 @@
 /* Recorrido industrial 2D · distribución, navegación y tarjeta giratoria del modelo
    originales/recorrido_azucar_demo.html, con las máquinas animadas originales (public/maquinas). */
-import { ETAPAS, FUENTES } from './etapas.js';
+import { ETAPAS } from './etapas.js';   // etapas.js conserva también FUENTES, como respaldo (no se muestran)
 import { VARS } from '../interactive/rules.js';
 import './proceso.css';
+import { irConFundido } from '../interactive/fundido.js';
 
 const BASE = import.meta.env.BASE_URL, WEB = import.meta.env.MODE === 'web';
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const N = ETAPAS.length, ORDEN_FUENTES = Object.keys(FUENTES);
+const N = ETAPAS.length;
 const proceso = $('proceso'), fin = $('siguiente'), flipper = $('rc-flipper'), front = $('rc-front'), back = $('rc-back');
 const ill = $('rc-ill'), host = $('rc-host');
 let index = 0, anim = null, girada = false, pausadaPorUsuario = false, token = 0;
@@ -78,18 +79,17 @@ const ORIGEN = {
 const TIPO = { fisico: 'Fenómeno físico', quimico: 'Reacción química', biologico: 'Proceso biológico' };
 const PART = { agua: 'H₂O', sacarosa: 'Sac', imp: 'Imp', fibra: 'Fib', ca: 'Ca²⁺', floc: 'Flóc', vapor: 'Vap', cristal: '', miel: 'Miel', aire: 'Aire' };
 const LEYENDA = { agua: 'agua', sacarosa: 'sacarosa disuelta', imp: 'impurezas', fibra: 'fibra', ca: 'iones calcio', floc: 'flóculos', vapor: 'vapor de agua', cristal: 'cristal de sacarosa', miel: 'miel', aire: 'aire' };
-const cita = ids => ids?.length ? ` <sup class="rc-cita">[${ids.map(id => ORDEN_FUENTES.indexOf(id) + 1).join(', ')}]</sup>` : '';
 const badge = o => { const [ic, nom, tit] = ORIGEN[o]; return `<span class="rc-origen rc-origen--${o}" title="${esc(tit)}">${ic} ${esc(nom)}</span>`; };
 
 function seccion(titulo, html, abierta = false) { return `<details class="rc-sec"${abierta ? ' open' : ''}><summary>${esc(titulo)}</summary><div class="rc-sec-in">${html}</div></details>`; }
 function fichaQuimica(e) {
   const q = e.quimica, tipos = [...new Set(q.particulas)];
   const flujos = `<div class="rc-flujos"><div><span class="rc-mini">ENTRA</span><ul>${q.entra.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div><span class="rc-flecha" aria-hidden="true">→</span><div><span class="rc-mini">SALE</span><ul>${q.sale.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div>` +
-    (q.composicion ? `<div class="rc-point"><strong>${esc(q.composicion.texto)}:</strong> ${esc(q.composicion.valor)}${cita(q.composicion.fuentes)} ${badge(q.composicion.origen)}</div>` : '');
+    (q.composicion ? `<div class="rc-point"><strong>${esc(q.composicion.texto)}:</strong> ${esc(q.composicion.valor)} ${badge(q.composicion.origen)}</div>` : '');
   const ocurre = q.ocurre.map(o => `<div class="rc-point"><span class="rc-tipo rc-tipo--${o.tipo}">${TIPO[o.tipo]}</span><strong>${esc(o.titulo)}.</strong> ${esc(o.texto)}${o.ecuacion ? `<div class="rc-ecuacion">${esc(o.ecuacion)}</div>` : ''}</div>`).join('');
   const aditivos = q.aditivos.ninguno ? `<div class="rc-point">${esc(q.aditivos.ninguno)}</div>` :
     q.aditivos.lista.map(a => `<div class="rc-point"><strong>${esc(a.nombre)}</strong><dl><dt>Para qué</dt><dd>${esc(a.para)}</dd><dt>Cómo actúa</dt><dd>${esc(a.como)}</dd><dt>Si falta o sobra</dt><dd>${esc(a.limite)}</dd></dl></div>`).join('');
-  const cond = q.condiciones.map(c => `<div class="rc-point"><div class="rc-cond-top"><strong>${esc(c.variable)}</strong>${badge(c.origen)}</div><div class="rc-valor">${esc(c.valor)}${cita(c.fuentes)}</div><p>${esc(c.porque)}</p></div>`).join('');
+  const cond = q.condiciones.map(c => `<div class="rc-point"><div class="rc-cond-top"><strong>${esc(c.variable)}</strong>${badge(c.origen)}</div><div class="rc-valor">${esc(c.valor)}</div><p>${esc(c.porque)}</p></div>`).join('');
   const sim = q.simulador ? seccion('En el simulador LLT 3D', `<p class="rc-nota">${badge('simulador')} Estas son las cuatro variables que votarán los grupos, con los efectos tal como están programados en el simulador. Son estimaciones didácticas, no mediciones de una fábrica.</p>` +
     VARS.map(v => `<div class="rc-point"><strong>${esc(v.name)}</strong> · ${esc(v.q)}<p>${esc(v.sci)}</p><ul class="rc-opts">${v.opts.map((o, j) => `<li><b>${esc(o.l)}</b>${j === v.ref ? ' <em>(referencia)</em>' : ''}: ${esc(o.t)}</li>`).join('')}</ul></div>`).join('')) : '';
   return `<div class="rc-back-in">
@@ -103,7 +103,6 @@ function fichaQuimica(e) {
     ${seccion('Condiciones de operación y por qué importan', cond)}
     ${sim}
     ${seccion('Conexión con el resultado', `<div class="rc-point">${esc(q.conexion)}</div>`)}
-    <p class="rc-ref">Fuentes: ${q.fuentes.map(id => `[${ORDEN_FUENTES.indexOf(id) + 1}]`).join(' ')} · ver la lista completa al pie del recorrido.</p>
     <div class="rc-bottom"><small>Revisión docente recomendada antes de exponer</small><button class="rc-btn alt" type="button" data-volver>↶ Volver a la máquina</button></div>
   </div>`;
 }
@@ -151,8 +150,11 @@ $('rc-prev').onclick = () => render(index - 1);
 $('rc-next').onclick = () => index < N - 1 ? render(index + 1) : finalizar();
 $('rc-volver').onclick = () => { proceso.scrollIntoView({ behavior: 'smooth' }); if (anim && !girada && !pausadaPorUsuario) anim.play(); };
 $('rc-titulo').tabIndex = -1;
-$('rc-fuentes-lista').innerHTML = ORDEN_FUENTES.map(id => `<li>${esc(FUENTES[id])}</li>`).join('');
 document.getElementById('begin').addEventListener('click', () => mostrarProceso());
+document.querySelectorAll('.rc-end-modos a').forEach(a => a.addEventListener('click', ev => {
+  if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
+  ev.preventDefault(); if (anim) anim.pause(); irConFundido(a.getAttribute('href'));
+}));
 addEventListener('keydown', ev => {
   if (proceso.hidden || ev.altKey || ev.ctrlKey || ev.metaKey || /input|select|textarea/i.test(ev.target.tagName)) return;
   const r = proceso.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;

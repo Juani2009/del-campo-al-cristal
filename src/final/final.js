@@ -13,15 +13,22 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const params = new URLSearchParams(location.search);
 const modo = params.get('modo') === 'grupal' && !WEB ? 'grupal' : 'individual';
+// Embebida: el clarificador 3D la prepara oculta en un iframe y la muestra con un fundido cuando está lista.
+const EMBEBIDA = params.has('embebido') && window.parent !== window;
+const avisar = tipo => { if (EMBEBIDA) try { window.parent.postMessage({ dcc: tipo }, location.origin); } catch {} };
+if (EMBEBIDA) document.documentElement.classList.add('fin-embebida');
+/* Ritmo de la animación: cristalización (T 30–60) a su velocidad original; el resto, un 23 % más breve. */
+const RITMO = { desde: 30, hasta: 60, rampa: 2.5, factor: 1.3 };
 
 function choicesValidos(ch) {
   return Array.isArray(ch) && ch.length === 4 && ch.every((o, i) => Number.isInteger(o) && o >= 0 && o < VARS[i].opts.length) ? ch : null;
 }
 function leerGuardado() { try { return JSON.parse(sessionStorage.getItem(CLAVE) || 'null'); } catch { return null; } }
 function error(msg) {
+  avisar('error');
   $('fin-velo').classList.add('fuera');
   const e = $('fin-error'); e.hidden = false;
-  e.innerHTML = `<div><span class="fin-eyebrow">NO SE PUEDE MOSTRAR EL RESULTADO</span><p>${esc(msg)}</p><a class="inf-btn" href="clarificador.html">Ir al clarificador LLT →</a> <a class="inf-btn alt" href="./">Volver al inicio</a></div>`;
+  e.innerHTML = `<div><span class="fin-eyebrow">NO SE PUEDE MOSTRAR EL RESULTADO</span><p>${esc(msg)}</p><a target="_top" class="inf-btn" href="clarificador.html">Ir al clarificador LLT →</a> <a target="_top" class="inf-btn alt" href="./">Volver al inicio</a></div>`;
 }
 function cargar(src, tipo) {
   return new Promise((ok, mal) => {
@@ -115,16 +122,27 @@ async function iniciar() {
   const datos = modo === 'grupal' ? await datosGrupales() : datosIndividuales();
   if (datos.error) { error(datos.error); return; }
   const r = computeResults(datos.choices), q = calidadDesdeResultados(r);
-  $('fin-velo').style.background = css(paletaAzucar(q).jugo);
   informe(datos.choices, modo === 'grupal' ? datos.estado : null);
   try { await Promise.all([cargar(BASE + 'maquinas/08-final.css', 'css'), cargar(BASE + 'maquinas/08-final.js')]); }
   catch (e) { error(e.message); return; }
   const mostrarInforme = () => { const s = $('informe'); s.hidden = false; requestAnimationFrame(() => s.classList.add('on')); $('fin-saltar').hidden = true; };
-  const anim = window.AzucarFinal.mount($('escena-final'), {
-    resultado: q, desdeLLT: true,
-    onReady: () => { $('fin-velo').classList.add('fuera'); $('fin-saltar').hidden = false; },
-    onEnd: () => setTimeout(mostrarInforme, 900),
-  });
+  let lista = false;
+  const alEstarLista = () => {
+    if (lista) return; lista = true; clearTimeout(espera);
+    $('fin-velo').classList.add('fuera'); $('fin-saltar').hidden = false;
+    avisar('listo');
+  };
+  let anim;
+  try {
+    anim = window.AzucarFinal.mount($('escena-final'), {
+      resultado: q, desdeLLT: true, ritmo: RITMO, autoplay: !EMBEBIDA,
+      onReady: alEstarLista,
+      onEnd: () => setTimeout(mostrarInforme, 900),
+    });
+  } catch (e) { console.error(e); error('No se pudo iniciar la animación en este dispositivo.'); mostrarInforme(); return; }
+  // Salida de emergencia: si la animación no avisa que está lista, nunca queda una pantalla lisa fija.
+  const espera = setTimeout(() => { if (!lista) { alEstarLista(); anim.play(); } }, 15000);
+  if (EMBEBIDA) addEventListener('message', ev => { if (ev.origin === location.origin && ev.data?.dcc === 'play') anim.play(); });
   $('fin-saltar').onclick = () => { anim.pause(); mostrarInforme(); };
   $('inf-repetir').onclick = () => { const s = $('informe'); s.classList.remove('on'); s.hidden = true; $('fin-saltar').hidden = false; anim.restart(); };
   window.__fin = anim;

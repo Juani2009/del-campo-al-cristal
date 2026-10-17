@@ -22,10 +22,11 @@ test('El QR Wi-Fi y el QR de votación están diferenciados',()=>{
 test('El servidor usa un tiempo límite predeterminado de 60 segundos',()=>{
  assert.match(read('server/plugin.js'),/LLT_VOTE_TIMEOUT_MS\)\|\|60000/);
 });
-test('3D se carga solo después de elegir modalidad/iniciar, y perfil fijo ligero',()=>{
+test('3D se carga solo después de elegir modalidad/iniciar, con resolución adaptativa',()=>{
  const js=read('src/main.js'),model=read('src/llt/clarificador.js');
  assert.match(js,/await import\('\.\/llt\/clarificador\.js'\)/);
  assert.match(js,/window\.LLTStartScene/);
- assert.match(model,/const PIXEL_CAP=IS_MOBILE\?0\.9:1\.15/);
+ assert.match(model,/const PR_MAX=Math\.min\(devicePixelRatio\|\|1,2\)/);   // resolución adaptativa, hasta 2×
+ assert.match(model,/function adaptar\(dt,ts\)/);
  assert.doesNotMatch(model,/window\.LLTQuality/);
 });

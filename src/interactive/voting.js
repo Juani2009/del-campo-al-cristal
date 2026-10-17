@@ -7,6 +7,7 @@ import { resultView } from './results.js';
 import { cardHTML } from '../components/cards.js';
 import './presentation.css';
 import * as Seguir from './continuar.js';
+import * as Fundido from './fundido.js';
 
 const GATE = [.165,.195,.405,.545];
 const EPS=.004, WIN_AFTER=.035;
@@ -92,11 +93,17 @@ function setLogin(){
   start.disabled=!admin||snapshot?.stage!=='lobby'||!snapshot?.connected;
   label.textContent=admin?'Presentadora conectada ✓':'En la Lenovo abrí la página desde localhost para habilitar el inicio. Si hace falta, desplegá Acceso de presentadora.';
 }
-function updateLobby(){
-  const lobby=snapshot?.stage!=='running';
+let fundiendo=false;
+function mostrarSala(lobby){
   root.hidden=!lobby;
   document.documentElement.classList.toggle('llt-lobby-locked',lobby);
   document.body.classList.toggle('llt-lobby-locked',lobby);
+}
+function updateLobby(){
+  const lobby=snapshot?.stage!=='running';
+  // Al iniciar la experiencia la sala se oscurece a negro y después aparece el 3D (sin cambio brusco).
+  if(!lobby&&!root.hidden&&!fundiendo){fundiendo=true;Fundido.cubrir().then(()=>{fundiendo=false;mostrarSala(snapshot?.stage!=='running');Fundido.revelarCuandoListo(true);});}
+  else if(!fundiendo)mostrarSala(lobby);
   $('llt-count').textContent=String(snapshot?.connected??0);
   $('llt-session-label').textContent=snapshot?.stage==='lobby'?'Sala de espera · sin nombres':'Conectando con el servidor…';
   setLogin();

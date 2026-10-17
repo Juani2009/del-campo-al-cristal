@@ -192,12 +192,26 @@ $('toggle-liquid').addEventListener('click',()=>{sim.liquidVisible=!sim.liquidVi
 /* cámara libre: órbita, paneo y zoom hacia el cursor; modo inspección con carcasa translúcida */
 const V={az:0.6,el:0.3,zoom:1,tx:0,ty:0,tz:0};let W=1,Hh=1,tv=0.3,auto=false,drag=false;const pt=new Map(),rc=new T.Raycaster();let pd=0,pm=null;
 const fitD=()=>Math.max(4.1/tv,(4.0+3.45*openV)/(tv*cam.aspect))*1.06,curD=()=>Math.max(0.25,fitD()*V.zoom);
-// Perfil de rendimiento siempre ligero, sin controles visibles.
-// En pantalla pequeña/alta densidad renderiza a menor resolución para mantener el movimiento fluido.
+// Resolución adaptativa: se dibuja con la densidad real de la pantalla (hasta 2×) para que se vea nítido,
+// y solo se baja (nunca por debajo de 1× salvo que el equipo no alcance) si los cuadros por segundo caen.
 const IS_MOBILE=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || matchMedia('(max-width:680px)').matches;
-const PIXEL_CAP=IS_MOBILE?0.9:1.15;
 const FRAME_INTERVAL=1000/(IS_MOBILE?30:45);
-function resize(){W=app.clientWidth;Hh=app.clientHeight;const por=W/Hh<0.9;cam.fov=por?44:34;cam.aspect=W/Hh;cam.near=0.03;cam.updateProjectionMatrix();ren.setPixelRatio(Math.min(devicePixelRatio,PIXEL_CAP));ren.setSize(W,Hh,false);tv=Math.tan(cam.fov*PI/360);}
+const PR_MAX=Math.min(devicePixelRatio||1,2),PR_MIN=Math.min(PR_MAX,0.75),PR_PISO=Math.min(PR_MAX,1);
+let pixelRatio=IS_MOBILE?Math.min(PR_MAX,1.5):PR_MAX;
+function resize(){W=app.clientWidth;Hh=app.clientHeight;const por=W/Hh<0.9;cam.fov=por?44:34;cam.aspect=W/Hh;cam.near=0.03;cam.updateProjectionMatrix();ren.setPixelRatio(pixelRatio);ren.setSize(W,Hh,false);tv=Math.tan(cam.fov*PI/360);}
+/* Mide el intervalo real entre cuadros dibujados y ajusta la resolución en pasos de 0,25. */
+const calidad={prom:FRAME_INTERVAL,lento:0,rapido:0,bloqueo:0};
+function adaptar(dt,ts){
+ if(dt>250)return;                                   // pestaña en segundo plano o pausa: no cuenta
+ calidad.prom+=(dt-calidad.prom)*.08;
+ if(calidad.prom>FRAME_INTERVAL*1.4){calidad.lento+=dt;calidad.rapido=0;}
+ else if(calidad.prom<FRAME_INTERVAL*1.1){calidad.rapido+=dt;calidad.lento=0;}
+ else{calidad.lento=calidad.rapido=0;}
+ const piso=calidad.lento>4000?PR_MIN:PR_PISO;
+ if(calidad.lento>1500&&pixelRatio>piso){pixelRatio=Math.max(piso,pixelRatio-.25);calidad.lento=0;calidad.bloqueo=ts+8000;calidad.prom=FRAME_INTERVAL;resize();}
+ else if(calidad.rapido>4000&&pixelRatio<PR_MAX&&ts>calidad.bloqueo){pixelRatio=Math.min(PR_MAX,pixelRatio+.25);calidad.rapido=0;resize();}
+}
+window.LLTResolucion=()=>({pixelRatio,max:PR_MAX,fps:Math.round(1000/calidad.prom)});
 function pan(dx,dy){const k=2*curD()*tv/Hh,r=new T.Vector3().setFromMatrixColumn(cam.matrixWorld,0),u=new T.Vector3().setFromMatrixColumn(cam.matrixWorld,1);V.tx+=(-r.x*dx+u.x*dy)*k;V.ty+=(-r.y*dx+u.y*dy)*k;V.tz+=(-r.z*dx+u.z*dy)*k;}
 function zoomAt(cx,cy,f){const oz=V.zoom,nz=Math.max(0.03,Math.min(2.5,oz*f));rc.setFromCamera(new T.Vector2(cx/W*2-1,-(cy/Hh)*2+1),cam);
 const n=cam.getWorldDirection(new T.Vector3()),tg=new T.Vector3(V.tx,V.ty,V.tz),o=rc.ray.origin,dr=rc.ray.direction,tt=tg.clone().sub(o).dot(n)/dr.dot(n),pp=o.clone().addScaledVector(dr,tt);
@@ -224,7 +238,7 @@ addEventListener('resize',resize);resize();setPhase(0);
 /* ===== API de integración (único añadido al código original) ===== */
 const app3d={T,scene,cam,ren,V,fitD,curD,model:m,dist,take,conn,interior,trdG,arms,scr,sim,paths,trdRings,mats:{trdM,stlI,cop,dk},get open(){return openV},setOpen,SD,fitFor:o=>Math.max(4.1/tv,(4.0+3.45*o)/(tv*cam.aspect))*1.06,setAuto(v){auto=v},hooks:[],_l:0,
  tick(){const n=performance.now(),dt=this._l?Math.min(.06,(n-this._l)*.001):0;this._l=n;for(const h of this.hooks)h(dt,n)}};
-(function(){let renderedAt=0;function loop(ts){requestAnimationFrame(loop);if(document.hidden || ts-renderedAt<FRAME_INTERVAL)return;renderedAt=ts;app3d.tick();const d=curD(),ce=Math.cos(V.el);
+(function(){let renderedAt=0;function loop(ts){requestAnimationFrame(loop);if(document.hidden || window.LLTPausa || ts-renderedAt<(window.LLTAhorro?120:FRAME_INTERVAL)-1)return;if(renderedAt&&!window.LLTAhorro)adaptar(ts-renderedAt,ts);renderedAt=ts;app3d.tick();const d=curD(),ce=Math.cos(V.el);
 cam.position.set(V.tx+d*ce*Math.sin(V.az),V.ty+d*Math.sin(V.el),V.tz+d*ce*Math.cos(V.az));cam.lookAt(V.tx,V.ty,V.tz);tickLiquid(performance.now());ren.render(scene,cam);}requestAnimationFrame(loop);})();
 
 export { app3d };

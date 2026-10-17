@@ -3,6 +3,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2b2d30">
 <title>LLT · Clarificador de jugo de caña · Del campo al cristal</title>
+<style>/* fundido desde el recorrido 2D (src/interactive/fundido.js) */
+html::after{content:"";position:fixed;inset:0;background:#000;z-index:2147483000;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .55s ease,visibility 0s linear .55s}
+html.dcc-negro::after{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .45s ease}
+@media(prefers-reduced-motion:reduce){html::after{transition:none!important}}
+</style>
+<script>try{if(sessionStorage.getItem('dcc-fundido')){sessionStorage.removeItem('dcc-fundido');document.documentElement.classList.add('dcc-negro')}}catch(e){}</script>
 </head><body>
 <div id="app"><canvas id="cv"></canvas></div>
 <aside id="hud" aria-live="polite"><b id="t-title"></b><p id="t-line"></p></aside>

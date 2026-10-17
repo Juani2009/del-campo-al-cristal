@@ -2,8 +2,6 @@
    Al terminar el recorrido, en lugar del informe aparece «Seguir el jugo hacia el evaporador».
    El informe completo se muestra al final de la animación. Con ?solo-llt se conserva el
    comportamiento original (informe #res dentro del clarificador). */
-import { computeResults } from './rules.js';
-import { calidadDesdeResultados, paletaAzucar, css } from './calidad.js';
 
 export const SOLO_LLT = new URLSearchParams(location.search).has('solo-llt');
 export const CLAVE = 'dcc-resultado';
@@ -34,14 +32,41 @@ export function setAlpha(a) {
   document.body.classList.toggle('res-on', on);
 }
 
+let iframe = null, enCurso = false;
 function continuar() {
-  if (!datos) return;
+  if (!datos || enCurso) return;
+  enCurso = true;
   try { sessionStorage.setItem(CLAVE, JSON.stringify({ ...datos, t: Date.now() })); } catch {}
-  const q = calidadDesdeResultados(computeResults(datos.choices));
-  const velo = document.createElement('div');
-  velo.id = 'llt-velo'; velo.style.background = css(paletaAzucar(q).jugo);
-  document.body.appendChild(velo);
-  requestAnimationFrame(() => velo.classList.add('on'));
   const url = `final.html?modo=${encodeURIComponent(datos.modo)}&ch=${datos.choices.join(',')}`;
-  setTimeout(() => { location.href = url; }, 650);
+  const boton = card.querySelector('button');
+  boton.disabled = true; boton.textContent = 'Preparando la animación…';
+  // El 3D sigue visible y en movimiento mientras la animación final se prepara oculta;
+  // mientras tanto se dibuja a menos cuadros por segundo para dejarle tiempo a la carga.
+  window.LLTAhorro = true;
+  iframe = Object.assign(document.createElement('iframe'), { id: 'llt-final', title: 'Animación final: del jugo al azúcar', src: url + '&embebido=1' });
+  document.body.appendChild(iframe);
+  const irDirecto = () => { location.href = url; };
+  const limite = setTimeout(irDirecto, 25000);
+  const alMensaje = ev => {
+    if (ev.origin !== location.origin || ev.source !== iframe?.contentWindow) return;
+    if (ev.data?.dcc === 'error') { clearTimeout(limite); removeEventListener('message', alMensaje); irDirecto(); }
+    if (ev.data?.dcc !== 'listo') return;
+    clearTimeout(limite); removeEventListener('message', alMensaje);
+    iframe.contentWindow.postMessage({ dcc: 'play' }, location.origin);   // el jugo ya avanza durante el fundido
+    iframe.classList.add('on'); card.classList.add('saliendo');
+    setTimeout(() => {
+      window.LLTPausa = true; window.LLTAhorro = false;                    // deja de dibujar el 3D, ya oculto
+      document.body.classList.add('llt-en-final');
+      try { history.pushState({ dcc: 'final' }, '', url); } catch {}
+      iframe.focus();
+    }, 750);
+  };
+  addEventListener('message', alMensaje);
 }
+// «Atrás» desde la animación final vuelve al clarificador 3D.
+addEventListener('popstate', () => {
+  if (!iframe || history.state?.dcc === 'final') return;
+  iframe.remove(); iframe = null; enCurso = false; window.LLTPausa = false; window.LLTAhorro = false;
+  document.body.classList.remove('llt-en-final');
+  if (card) { card.classList.remove('saliendo'); const b = card.querySelector('button'); b.disabled = false; b.textContent = 'Seguir el jugo hacia el evaporador →'; }
+});

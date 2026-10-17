@@ -45,6 +45,18 @@ h1 span{display:block}h1 .soft{font-weight:520;color:#4b877c;letter-spacing:-.08
  .app{padding:0}.shell{border-radius:0;min-height:100svh;border:none;box-shadow:none}.top{padding:21px 24px}.identity strong{font-size:15px}.identity small{font-size:8px}.symbol{width:40px;height:40px}.top-right{font-size:9px;letter-spacing:.7px}.hero{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;min-height:calc(100svh - 88px);padding:clamp(38px,7vh,78px) 25px 86px}.hero-copy{width:100%;max-width:580px}.eyebrow{margin-bottom:23px;letter-spacing:1.65px;font-size:10px}h1{font-size:clamp(53px,11.6vw,84px);line-height:1.025}.tagline{margin:22px 0 26px;max-width:370px;font-size:15px}.cta{min-height:53px;padding:7px 7px 7px 23px;font-size:13px;gap:26px}.cta .arr{width:38px;height:38px}.visual{top:auto;right:-28%;bottom:36px;width:125%;height:clamp(250px,43vh,470px)}.visual svg{mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 89%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 89%,transparent 100%)}.visual:before{background:linear-gradient(180deg,#eaf7f9 0%,transparent 17%),linear-gradient(90deg,#edf8f970,transparent 38%),linear-gradient(0deg,#e0f0f5 0%,transparent 12%)}.rim{right:-43%;top:45%;width:245px;height:245px}.halftone{right:-15%;top:30%;height:200px;width:200px}.footerline{left:25px;right:25px;bottom:17px;font-size:8px;letter-spacing:1px}.footerline .line{margin:0 2px}}
 @media(max-width:430px){.top-right{display:none}.hero{padding-top:36px}.visual{height:40vh;min-height:230px;right:-30%;bottom:24px}h1{font-size:clamp(52px,12.4vw,67px)}}
 @media(max-height:680px) and (max-width:760px){.hero{padding-top:23px}.visual{height:37vh;min-height:180px;bottom:18px}.tagline{margin:12px 0 16px}.eyebrow{margin-bottom:12px}.footerline{display:none}}
+/* Celulares en vertical: la ilustración ocupa todo el ancho (sin borde cortado a la izquierda)
+   y se encuadra sobre la fábrica y las cañas, que antes quedaban fuera de pantalla. */
+@media(max-width:760px){
+ html,body{overflow-x:hidden}
+ .visual{left:0;right:0;width:100%}
+ .visual svg{width:165%;max-width:none;transform:translateX(-39%);mask-image:linear-gradient(180deg,transparent 0%,#000 32%,#000 88%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 32%,#000 88%,transparent 100%)}
+ .visual:before{background:linear-gradient(0deg,#e0f0f5 0%,transparent 12%)}
+ .rim{right:-34%}.halftone{right:-10%}
+ .footerline .line{min-width:12px}
+}
+@media(max-width:760px) and (min-height:700px){.hero{padding-bottom:clamp(86px,13vh,120px)}}
+@media(max-width:380px){.hero-copy h1{font-size:clamp(46px,12.2vw,60px)}.tagline{font-size:14px}.footerline{font-size:7.5px;letter-spacing:.6px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -139,7 +151,6 @@ h1 span{display:block}h1 .soft{font-weight:520;color:#4b877c;letter-spacing:-.08
     <div class="rc-face rc-back" id="rc-back" aria-label="Química de la etapa"></div>
    </div></div>
   </article>
-  <details class="rc-fuentes" id="rc-fuentes"><summary>Fuentes bibliográficas del recorrido</summary><ol id="rc-fuentes-lista"></ol><p>Las cifras marcadas como «rango industrial orientativo» provienen de bibliografía técnica y varían según la planta, la caña y el esquema de proceso. Las «condiciones del simulador» son estimaciones didácticas del clarificador LLT, no mediciones de planta.</p></details>
  </div>
 </section>
 <section class="rc-end" id="siguiente" hidden aria-labelledby="rc-titulo-end">

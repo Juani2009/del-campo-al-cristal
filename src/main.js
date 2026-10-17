@@ -7,6 +7,7 @@ const WEB = import.meta.env.MODE === 'web';   // versión web estática: sin ser
 if (WEB) document.body.classList.add('llt-web');
 let mode = new URLSearchParams(location.search).get('modo');
 if (WEB && mode === 'grupal') mode = null;
+import { revelarCuandoListo } from './interactive/fundido.js';
 const choose = document.getElementById('mode-choice');
 const lobby = document.getElementById('lobby');
 
@@ -30,6 +31,7 @@ if (mode === 'individual') {
   lobby.hidden = true;
   document.body.classList.add('llt-mode-individual');
   const { Votes } = await import('./interactive/solo.js');
+  revelarCuandoListo(true);
   await startScene(Votes);
 } else if (mode === 'grupal') {
   choose.hidden = true;
@@ -39,9 +41,11 @@ if (mode === 'individual') {
   window.LLTStartScene = () => startScene(Votes);
   // Durante la sala de espera no se construye ni dibuja el clarificador 3D.
   window.dispatchEvent(new Event('llt:escena-disponible'));
+  revelarCuandoListo(false);
 } else {
   choose.hidden = false;
   lobby.hidden = true;
   document.body.classList.add('llt-mode-choose');
   document.getElementById('tbtn').hidden = true;
+  revelarCuandoListo(false);
 }
