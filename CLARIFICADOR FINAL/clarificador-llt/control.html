@@ -1,0 +1,16 @@
+<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#15222c"><title>LLT · Panel de presentadora</title></head><body class="llt-mobile-body admin-page">
+<main class="admin-shell">
+ <header class="llt-mobile-header"><span class="eyebrow">LLT · CENTRO DE SEGUIMIENTO</span><span id="connection" class="connection">Conectando…</span></header>
+ <div class="admin-heading"><h1>Seguimiento en vivo</h1><p>Participantes, estado de las estaciones y resultados en tiempo real. Esta pantalla se puede abrir desde el celular de un compañero.</p></div>
+ <details id="advanced-access"><summary>Administración y emergencias (acceso protegido)</summary><form id="admin-login" class="llt-mobile-panel"><h2>Acceso de presentadora</h2><p>Solo para iniciar, reiniciar o resolver un imprevisto. El seguimiento no necesita PIN.</p><label for="pin">PIN de seis cifras</label><input id="pin" type="password" inputmode="numeric" autocomplete="off" required placeholder="••••••"><button type="submit" class="primary">Ingresar al panel</button></form></details>
+ <div id="admin-content" hidden>
+   <div class="admin-stats"><div><span>EN SALA</span><strong id="admin-connected">0</strong></div><div><span>ASIGNADOS</span><strong id="admin-assigned">0</strong></div><div><span>ESTADO</span><strong id="admin-stage">Espera</strong></div></div>
+   <div class="admin-actions" id="admin-actions" hidden><button id="admin-start" class="primary">Iniciar experiencia</button><button id="admin-reset" class="danger">Reiniciar toda la experiencia</button><button id="admin-logout">Cerrar acceso</button></div>
+   <p class="admin-note">Podés abrir esta página en otra pestaña de tu Lenovo. La presentación 3D sigue en la pantalla principal sin mostrar estos controles.</p>
+   <div id="admin-groups" class="admin-groups"></div>
+   <div id="admin-results" class="admin-results"></div>
+ </div>
+ <p id="admin-message" class="llt-message" role="status"></p>
+ <footer>Vista de observación sin PIN · Las funciones administrativas están protegidas · Red local</footer>
+</main>
+<script type="module" src="/src/mobile/control.js"></script></body></html>

@@ -1,0 +1,28 @@
+{
+  "name": "clarificador-llt",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Clarificador Crompion LLT 3D + votaciones reales locales para celulares",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --test",
+    "check": "node scripts/check-imports.mjs && node scripts/check-offline.mjs",
+    "serve": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "animejs": "3.2.2",
+    "three": "0.186.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}
