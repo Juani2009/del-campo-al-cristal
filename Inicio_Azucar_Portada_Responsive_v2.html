@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eaf5fb">
+<meta name="description" content="Prototipo de portada para un recorrido educativo sobre la química del azúcar de caña.">
+<title>Del campo al cristal · Inicio</title>
+<style>
+:root{--ink:#183b51;--ink-soft:#54758a;--blue:#17617c;--green:#547e60;--line:rgba(88,137,158,.23);--white:#fff;--outer:#d7eff9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:linear-gradient(135deg,#cce8f5,#e6f5fa 44%,#b7dce8);font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #2d89a3;outline-offset:5px}
+.app{min-height:100svh;padding:clamp(10px,1.6vw,24px);display:flex;align-items:stretch}
+.shell{width:min(100%,1660px);min-height:calc(100svh - clamp(20px,3.2vw,48px));margin:auto;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.84);border-radius:clamp(20px,2.4vw,32px);background:#e9f6fa;box-shadow:0 22px 75px rgba(26,81,100,.14);isolation:isolate}
+.bg-wash{position:absolute;inset:0;background:radial-gradient(circle at 15% 5%,#ffffffba,transparent 49%),linear-gradient(112deg,#f7fcfd 0%,#e5f4fa 47%,#d6edfa 100%);z-index:-2}
+.bg-grain{position:absolute;inset:0;opacity:.2;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.18' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:multiply;z-index:3}
+.top{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:clamp(22px,3.2vw,43px) clamp(25px,5.6vw,90px);gap:18px}
+.identity{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit}
+.symbol{display:grid;place-items:center;width:45px;height:45px;border:1px solid #a9d4dc;border-radius:14px;background:linear-gradient(135deg,#efffff,#cbe9e6);box-shadow:0 7px 20px #217d9621}
+.identity strong{display:block;font-size:17px;letter-spacing:-.5px;font-weight:770}.identity small{display:block;margin-top:4px;font-size:9px;letter-spacing:2px;color:#7797a3;font-weight:760}
+.top-right{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:750;letter-spacing:1.4px;color:#6a909e}
+.top-right i{display:block;width:7px;height:7px;background:#83b28a;border-radius:50%;box-shadow:0 0 0 5px #d6e9dd}
+.hero{position:relative;min-height:min(780px,calc(100svh - 162px));display:flex;align-items:center;padding:35px clamp(25px,8.5vw,137px) 135px}
+.hero-copy{position:relative;z-index:4;width:55%;max-width:690px;animation:intro .9s .08s both}
+.eyebrow{display:flex;align-items:center;gap:10px;color:#59899c;font-size:11px;letter-spacing:2.5px;font-weight:850;text-transform:uppercase;margin:0 0 27px}
+.eyebrow:before{content:"";width:33px;height:2px;border-radius:3px;background:#6bafaa}
+h1{font-size:clamp(56px,7.1vw,115px);line-height:.99;letter-spacing:-.075em;margin:0;font-weight:770;color:#163e57}
+h1 span{display:block}h1 .soft{font-weight:520;color:#4b877c;letter-spacing:-.08em}
+.tagline{margin:30px 0 34px;max-width:415px;color:#52758a;font-size:clamp(15px,1.4vw,19px);line-height:1.55;font-weight:420}
+.cta{display:inline-flex;align-items:center;gap:39px;justify-content:space-between;border:1px solid #1c6177;border-radius:100px;background:#144c65;color:#fff;font-weight:730;font-size:14px;padding:8px 9px 8px 27px;min-height:58px;box-shadow:0 12px 30px #15546b35;transition:transform .2s,background .2s,box-shadow .2s}
+.cta:hover{background:#206c84;transform:translateY(-2px);box-shadow:0 17px 35px #15546b45}
+.cta .arr{display:grid;place-items:center;width:41px;height:41px;border-radius:100%;background:#ffffff2a;font-size:23px;line-height:1;font-weight:350}
+.visual{position:absolute;right:-2.8%;top:-5%;bottom:-4%;width:76%;z-index:1;pointer-events:none}
+.visual:before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,#f0f9fc 1%,#eef9fbaa 17%,transparent 42%),linear-gradient(0deg,#dff0f5 0%,transparent 18%)}
+.visual svg{width:100%;height:100%;display:block;mask-image:radial-gradient(ellipse 87% 100% at 73% 59%,#000 65%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 87% 100% at 73% 59%,#000 65%,transparent 100%)}
+.rim{position:absolute;z-index:3;width:360px;height:360px;border-radius:50%;border:1px solid #ffffff65;right:2%;top:4%;box-shadow:0 0 0 75px #ffffff1b,0 0 0 151px #ffffff0b;pointer-events:none}
+.halftone{position:absolute;z-index:3;right:-5%;top:-5%;width:35%;height:36%;opacity:.21;pointer-events:none;background:radial-gradient(#3b9783 1.3px,transparent 1.4px) 0 0 / 12px 12px;mask-image:radial-gradient(circle,black,transparent 72%)}
+.footerline{position:absolute;z-index:5;left:clamp(25px,5.6vw,90px);right:clamp(25px,5.6vw,90px);bottom:28px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-top:1px solid #9fcbd543;padding-top:20px;color:#6d93a1;font-size:10px;letter-spacing:1.65px;text-transform:uppercase;font-weight:730}
+.footerline .line{flex:1;height:1px;background:linear-gradient(90deg,#7baeb759,transparent);margin:0 14px}
+/* stage preview: no route dependence, just a functional design mockup */
+.stage{position:absolute;z-index:8;inset:0;background:linear-gradient(130deg,#f4fafc,#d9eff7);display:flex;flex-direction:column;visibility:hidden;opacity:0;transform:translateY(17px);pointer-events:none;transition:opacity .38s,transform .38s,visibility .38s}
+.stage.show{visibility:visible;opacity:1;transform:none;pointer-events:auto}
+.stage-top{padding:31px clamp(25px,5.6vw,90px);display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.back{border:0;background:#ffffffba;border-radius:30px;color:#245a70;padding:12px 18px;font-size:13px;font-weight:700}
+.stage-top small{color:#7394a1;letter-spacing:1.5px;font-size:10px;font-weight:730}
+.stage-main{flex:1;display:grid;grid-template-columns:1fr 1.2fr;align-items:center;padding:clamp(25px,7vw,100px);gap:28px}
+.stage h2{font-size:clamp(44px,6.5vw,95px);line-height:1.04;letter-spacing:-.065em;margin:14px 0 20px;color:#1c5266}
+.stage-label{font-size:11px;letter-spacing:2.2px;color:#6c9da2;font-weight:800}
+.stage p{color:#5f7f8e;max-width:410px;font-size:clamp(15px,1.4vw,19px);line-height:1.65}
+.stage-art{display:grid;place-items:center;max-width:620px;width:100%;margin:auto;background:linear-gradient(160deg,#e0f2f8,#d4eced);border-radius:34px;min-height:420px;border:1px solid #ffffffce;box-shadow:inset 0 1px 10px #ffffff9b}
+.stage-art svg{width:min(78%,410px);height:auto}
+.stage-note{font-size:11px;color:#81a0ab;margin-top:26px}
+@keyframes intro{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media(max-width:1080px){.hero{padding-left:6.2vw;padding-right:5vw}h1{font-size:clamp(58px,7.8vw,94px)}.visual{width:85%;right:-11%}.hero-copy{width:58%}}
+@media(max-width:760px){
+ .app{padding:0}.shell{border-radius:0;min-height:100svh;border:none;box-shadow:none}.top{padding:21px 24px}.identity strong{font-size:15px}.identity small{font-size:8px}.symbol{width:40px;height:40px}.top-right{font-size:9px;letter-spacing:.7px}.hero{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;min-height:calc(100svh - 88px);padding:clamp(38px,7vh,78px) 25px 86px}.hero-copy{width:100%;max-width:580px}.eyebrow{margin-bottom:23px;letter-spacing:1.65px;font-size:10px}h1{font-size:clamp(53px,11.6vw,84px);line-height:1.025}.tagline{margin:22px 0 26px;max-width:370px;font-size:15px}.cta{min-height:53px;padding:7px 7px 7px 23px;font-size:13px;gap:26px}.cta .arr{width:38px;height:38px}.visual{top:auto;right:-28%;bottom:36px;width:125%;height:clamp(250px,43vh,470px)}.visual svg{mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 89%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 89%,transparent 100%)}.visual:before{background:linear-gradient(180deg,#eaf7f9 0%,transparent 17%),linear-gradient(90deg,#edf8f970,transparent 38%),linear-gradient(0deg,#e0f0f5 0%,transparent 12%)}.rim{right:-43%;top:45%;width:245px;height:245px}.halftone{right:-15%;top:30%;height:200px;width:200px}.footerline{left:25px;right:25px;bottom:17px;font-size:8px;letter-spacing:1px}.footerline .line{margin:0 2px}.stage-main{grid-template-columns:1fr;gap:12px;padding:30px 24px 70px;align-content:start}.stage h2{font-size:clamp(46px,9.5vw,76px)}.stage-art{min-height:285px;border-radius:22px}.stage-top{padding:20px 24px}.stage-top small{max-width:130px;text-align:right;font-size:9px}.stage p{font-size:15px}}
+@media(max-width:430px){.top-right{display:none}.hero{padding-top:36px}.visual{height:40vh;min-height:230px;right:-30%;bottom:24px}h1{font-size:clamp(52px,12.4vw,67px)}}
+@media(max-height:680px) and (max-width:760px){.hero{padding-top:23px}.visual{height:37vh;min-height:180px;bottom:18px}.tagline{margin:12px 0 16px}.eyebrow{margin-bottom:12px}.footerline{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app"><main class="shell" aria-label="Portada educativa del proceso del azúcar">
+ <div class="bg-wash" aria-hidden="true"></div><div class="bg-grain" aria-hidden="true"></div>
+ <header class="top">
+  <div class="identity"><div class="symbol" aria-hidden="true"><svg width="31" height="31" viewBox="0 0 40 40" fill="none"><path d="M20 34V10M20 26C10 24 6 17 5 9c10 1 17 7 15 17ZM20 20C29 16 32 10 32 4c-9 3-13 9-12 16ZM20 31c8-1 13-7 15-13-9 0-15 5-15 13Z" fill="#539884" stroke="#3e806d" stroke-width="1.1" stroke-linejoin="round"/></svg></div><div><strong>Azúcar de caña</strong><small>QUÍMICA INDUSTRIAL</small></div></div>
+  <div class="top-right"><i aria-hidden="true"></i> JUJUY · ARGENTINA</div>
+ </header>
+ <section class="hero" id="inicio">
+  <div class="hero-copy">
+   <div class="eyebrow">UNA EXPERIENCIA DEL PROCESO</div>
+   <h1><span>Del campo</span><span>al <span class="soft" style="display:inline">cristal.</span></span></h1>
+   <p class="tagline">La química detrás de cada cristal de azúcar.</p>
+   <button class="cta" id="begin" type="button">Ver proceso <span class="arr" aria-hidden="true">→</span></button>
+  </div>
+  <div class="visual" aria-hidden="true">
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 740" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c8e8f8"/><stop offset=".53" stop-color="#d8eff7"/><stop offset="1" stop-color="#def0e7"/></linearGradient>
+      <linearGradient id="far" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8ab2cc"/><stop offset="1" stop-color="#b8d2d7"/></linearGradient>
+      <linearGradient id="field" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9fbd83"/><stop offset="1" stop-color="#518c7a"/></linearGradient>
+      <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f5f9f7"/><stop offset="1" stop-color="#bdd2d6"/></linearGradient>
+      <pattern id="rows" width="26" height="14" patternUnits="userSpaceOnUse"><path d="M0 13L26 0" stroke="#e0e6b0" stroke-width="2" opacity=".39"/></pattern>
+      <pattern id="lines" width="20" height="26" patternUnits="userSpaceOnUse"><path d="M0 24l20-18" stroke="#85b59e" stroke-width="1.7" opacity=".75"/></pattern>
+      <filter id="sblur"><feGaussianBlur stdDeviation="12"/></filter>
+    </defs>
+    <rect width="1100" height="740" fill="url(#sky)"/>
+    <circle cx="778" cy="140" r="108" fill="#ffffff95" filter="url(#sblur)"/>
+    <path d="M0 328L94 261l60 27 91-94 61 42 80-121 66 72 90-136 85 112 78-59 101 127 80-42 95 95 93-52 126 118V402H0Z" fill="url(#far)"/>
+    <path d="M0 342l129-86 77 40 99-85 64 41 108-138 73 83 105-94 87 103 112-28 122 96 143-83 161 145v44H0Z" fill="#9cbfd0" opacity=".75"/>
+    <path d="M406 162l71-48 53 60-33-12-17 13-17-12-18 13ZM626 137l29-34 39 45-30-14-14 9Z" fill="#e6f4f5" opacity=".8"/>
+    <path d="M0 345Q210 318 385 348T740 337t360 12v395H0Z" fill="#a8c7ad"/>
+    <path d="M0 404q204-43 351 2T692 394t408 32v318H0Z" fill="#729d83"/>
+    <path d="M0 459L453 390 1100 507v233H0Z" fill="url(#field)"/>
+    <path d="M0 502L423 411 1100 560v25L423 426 0 526Z" fill="#e2d4aa" opacity=".67"/>
+    <path d="M0 539L420 423 1100 613v22L421 435 0 566Z" fill="#d9dbaa" opacity=".53"/>
+    <path d="M0 603L407 449 1100 685v55H0Z" fill="#74a78e"/>
+    <path d="M0 638L412 459 1100 710v30H0Z" fill="url(#rows)" opacity=".68"/>
+    <path d="M0 457L455 397 1100 507 1100 561 448 417 0 486Z" fill="url(#lines)" opacity=".5"/>
+    <!-- factory architectural group on horizon -->
+    <g transform="translate(523 286)">
+      <ellipse cx="304" cy="235" rx="330" ry="35" fill="#457f7c" opacity=".22"/>
+      <!-- rear pipes and structures -->
+      <path d="M54 137V71h120v59M315 98V24h30v75M375 91V6h20v90" stroke="#b5cbd1" stroke-width="14" fill="none"/>
+      <g fill="#e3edf0" stroke="#a5c2ca" stroke-width="2">
+       <rect x="9" y="125" width="180" height="103" rx="3"/><rect x="171" y="135" width="191" height="93" rx="2"/><rect x="362" y="153" width="166" height="75" rx="2"/>
+       <rect x="82" y="80" width="55" height="144" rx="5"/><rect x="240" y="43" width="68" height="182" rx="7"/><rect x="422" y="87" width="62" height="141" rx="5"/>
+      </g>
+      <g fill="url(#roof)" stroke="#9cb8c0" stroke-width="2">
+       <path d="M0 130l85-30 107 30Z"/><path d="M167 137l102-33 99 33Z"/><path d="M355 155l92-34 93 34Z"/>
+      </g>
+      <g fill="#bcd7dc" stroke="#94b4bc" stroke-width="2">
+       <rect x="72" y="72" width="79" height="18" rx="4"/><rect x="230" y="34" width="86" height="17" rx="4"/><rect x="413" y="81" width="81" height="18" rx="4"/>
+      </g>
+      <g stroke="#80a4b0" stroke-width="2.3" opacity=".75">
+       <path d="M20 153h159M20 175h159M20 198h159M183 156h170M183 179h170M183 201h170M369 177h146M369 199h146"/>
+       <path d="M91 94v126M105 94v126M119 94v126M132 94v126M257 55v166M275 55v166M292 55v166M438 108v112M454 108v112M470 108v112"/>
+      </g>
+      <g fill="#819fab"><rect x="69" y="20" width="8" height="117"/><rect x="346" y="-4" width="11" height="158"/><rect x="495" y="28" width="9" height="131"/></g>
+      <g fill="#f4fbfc" opacity=".75" filter="url(#sblur)"><ellipse cx="74" cy="3" rx="23" ry="11"/><ellipse cx="90" cy="-10" rx="25" ry="12"/><ellipse cx="359" cy="-23" rx="28" ry="13"/><ellipse cx="372" cy="-40" rx="27" ry="14"/><ellipse cx="506" cy="9" rx="27" ry="13"/></g>
+      <path d="M0 230h542" stroke="#f9ffff" stroke-width="7" opacity=".85"/>
+      <g fill="#a1c5d0"><rect x="55" y="234" width="76" height="12"/><rect x="260" y="232" width="88" height="14"/><rect x="435" y="233" width="70" height="13"/></g>
+    </g>
+    <!-- large foreground sugarcane stalks, restrained -->
+    <g transform="translate(780 466)" opacity=".97" stroke-linecap="round" stroke-linejoin="round">
+      <g stroke="#5c8d68" stroke-width="7"><path d="M126 275L103 5"/><path d="M181 275l24-231"/><path d="M251 275l-10-190"/><path d="M330 275l-37-243"/><path d="M375 275l16-183"/></g>
+      <g stroke="#93bb75" stroke-width="10"><path d="M131 268L107 50"/><path d="M183 265L205 61"/><path d="M250 260L240 103"/><path d="M326 255L292 59"/></g>
+      <g fill="#6b9e7a"><path d="M105 54Q18 26 -28 53 49 66 121 89Z"/><path d="M107 72Q168-15 239-11 164 55 113 102Z"/><path d="M201 66Q119 18 40 4 112 65 191 100Z"/><path d="M238 119Q316 33 392 30 309 109 252 145Z"/><path d="M289 76Q214-5 173-30 210 59 297 116Z"/><path d="M388 96Q429 23 485-5 451 79 388 125Z"/></g>
+      <g fill="#9ec1a0" opacity=".8"><path d="M103 93Q37 67 4 82 59 94 116 114Z"/><path d="M233 143Q310 92 350 115 301 149 243 159Z"/></g>
+      <g stroke="#d8d7a1" stroke-width="5" opacity=".78"><path d="M105 92l18 1M108 134l18 1M112 174l18 1M195 111l20 1M191 169h19M190 207h18M289 139l21-2M298 182l20-1"/></g>
+    </g>
+   </svg>
+  </div>
+  <div class="rim" aria-hidden="true"></div><div class="halftone" aria-hidden="true"></div>
+ </section>
+ <footer class="footerline"><span>DEL CAMPO</span><span class="line"></span><span>DEL JUGO</span><span class="line"></span><span>AL AZÚCAR</span></footer>
+ <section class="stage" id="stage" role="region" aria-hidden="true" aria-label="Primera etapa de prueba">
+  <div class="stage-top"><button class="back" id="back" type="button">← Volver al inicio</button><small>PRIMERA ETAPA · PRUEBA DE DISEÑO</small></div>
+  <div class="stage-main"><div><span class="stage-label">01 / 07 · MATERIA PRIMA</span><h2>Todo comienza<br>en la caña.</h2><p>En sus tejidos hay agua y sacarosa disuelta: el azúcar que después vamos a recuperar.</p><div class="stage-note">Esta pantalla solo muestra cómo podría empezar el recorrido.</div></div>
+   <div class="stage-art"><svg viewBox="0 0 420 420" role="img" aria-label="Corte circular de una caña con sacarosa disuelta"><defs><radialGradient id="cut" cx="42%" cy="40%"><stop stop-color="#f5e9ba"/><stop offset=".8" stop-color="#ddd6a3"/><stop offset="1" stop-color="#8ba889"/></radialGradient></defs><circle cx="210" cy="210" r="173" fill="#ffffff8c" stroke="white" stroke-width="2"/><circle cx="210" cy="210" r="141" fill="url(#cut)" stroke="#7ba38b" stroke-width="17"/><circle cx="210" cy="210" r="109" fill="none" stroke="#e8ddb9" stroke-width="3" stroke-dasharray="7 10"/><g fill="#76a696" opacity=".7"><circle cx="169" cy="152" r="6"/><circle cx="261" cy="177" r="8"/><circle cx="132" cy="225" r="7"/><circle cx="242" cy="266" r="7"/><circle cx="191" cy="283" r="9"/></g><g fill="#dba76b" opacity=".84"><rect x="198" y="159" width="17" height="17" rx="4" transform="rotate(23 206 168)"/><rect x="256" y="218" width="16" height="16" rx="4" transform="rotate(29 264 226)"/><rect x="163" y="236" width="17" height="17" rx="4" transform="rotate(33 172 245)"/><rect x="205" y="264" width="13" height="13" rx="3"/></g></svg></div>
+  </div>
+ </section>
+</main></div>
+<script>
+(()=>{const stage=document.getElementById('stage'),begin=document.getElementById('begin'),back=document.getElementById('back');function open(){stage.classList.add('show');stage.setAttribute('aria-hidden','false');back.focus({preventScroll:true});}function close(){stage.classList.remove('show');stage.setAttribute('aria-hidden','true');begin.focus({preventScroll:true});}begin.addEventListener('click',open);back.addEventListener('click',close);window.addEventListener('keydown',e=>{if(e.key==='Escape'&&stage.classList.contains('show'))close()});})();
+</script>
+</body>
+</html>
