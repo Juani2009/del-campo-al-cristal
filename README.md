@@ -20,7 +20,7 @@ npm run build
 npm run serve        # http://localhost:4173/  (celulares: http://IP-DE-LA-COMPUTADORA:4173/votar)
 ```
 
-En Windows se pueden usar `PREPARAR_PRIMERA_VEZ.bat` (una vez) e `INICIAR_CLARIFICADOR.bat`. Para desarrollo: `npm run dev` (puerto 5173). Más detalles de la sala, los QR y el panel `/control` en `README_LLT.md` y `GUIA_DE_INICIO_FACIL.txt`.
+En Windows alcanza con hacer doble clic en **`INICIAR_PAGINA.bat`**: instala lo necesario la primera vez (con internet), prepara la página, inicia el servidor local y abre el navegador. Después funciona sin internet. Para desarrollo: `npm run dev` (puerto 5173). Más detalles de la sala, los QR y el panel `/control` en `README_LLT.md` y `GUIA_DE_INICIO_FACIL.txt`.
 
 ## Versión web (estática, sin servidor)
 
@@ -29,7 +29,7 @@ npm run build:web    # genera dist-web/
 npm run preview:web  # prueba local en http://localhost:4174/
 ```
 
-`dist-web/` se puede publicar en cualquier hosting estático (por ejemplo GitHub Pages o Netlify): usa rutas relativas. Incluye la portada, el recorrido 2D, el clarificador en modo individual y la animación final. La votación grupal solo existe en la versión local.
+`dist-web/` usa rutas relativas. En GitHub Pages se publica automáticamente con `.github/workflows/pages.yml` cada vez que se actualiza `main` (antes hay que activar una vez Settings → Pages → Source: «GitHub Actions»). La dirección queda `https://<usuario>.github.io/del-campo-al-cristal/`. Incluye la portada, el recorrido 2D, el clarificador en modo individual y la animación final. La votación grupal solo existe en la versión local.
 
 ## Cómo se conecta el resultado
 
