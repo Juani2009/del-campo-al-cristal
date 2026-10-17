@@ -133,7 +133,8 @@ export function lltPlugin(){
       for(const ip of lanAddresses())console.log(`  ║ Alumnos: http://${ip}:${port}/votar`);
       console.log('  ╚═══════════════════════════════════════════════╝\n');
     });
-    return ()=>{clearInterval(expiryTimer);io.close();};
+    // Limpieza al cerrar el servidor. (No se devuelve una función: Vite la ejecutaría enseguida como post-hook y cerraría el servidor.)
+    httpServer.once('close',()=>{clearInterval(expiryTimer);});
   }
   return {name:'llt-votaciones-locales',configureServer:mount,configurePreviewServer:mount};
 }

@@ -3,7 +3,7 @@ CLARIFICADOR LLT — PRIMERA PRUEBA EN TU LENOVO
 
 1. Conservá tu proyecto anterior como respaldo.
 2. Extraé este ZIP en una carpeta NUEVA.
-3. En VS Code abrí exactamente la carpeta «clarificador-llt».
+3. En VS Code abrí exactamente la carpeta del proyecto «del-campo-al-cristal».
 4. En una terminal CMD escribí:
 
    npm install

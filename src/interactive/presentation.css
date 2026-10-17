@@ -67,3 +67,15 @@ body.llt-mode-choose #vcard,body.llt-mode-grupal:not(.llt-scene-ready) #hud{disp
 body.llt-mode-individual #mode-choice,body.llt-mode-individual #lobby{display:none!important}
 @media(max-width:820px){.llt-lobby-grid{grid-template-columns:1fr}.llt-qr-pair{max-width:525px;margin:0 auto}.llt-choice-grid{gap:12px}.llt-mode-option{min-height:250px}}
 @media(max-width:610px){.llt-choice-grid{grid-template-columns:1fr}.llt-mode-option{min-height:auto}.llt-qr-pair{grid-template-columns:1fr}.llt-qr-box{max-width:250px;margin:0 auto;width:100%}#llt-wifi-form{grid-template-columns:1fr}#lobby .llt-lobby-card{width:100%}}
+
+/* ===== Del campo al cristal: continuación hacia la animación final ===== */
+#llt-seguir{position:fixed;z-index:22;right:clamp(14px,3vw,44px);bottom:calc(clamp(18px,4vh,44px) + env(safe-area-inset-bottom,0px));width:min(360px,calc(100vw - 28px));padding:16px 18px 18px;background:rgba(44,52,60,.9);border:1px solid rgba(139,208,247,.45);border-radius:16px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#eef6fb;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;opacity:0;visibility:hidden;pointer-events:none;box-shadow:0 18px 50px #0006}
+#llt-seguir.on{pointer-events:auto}
+#llt-seguir strong{display:block;margin:6px 0 4px;font-size:clamp(17px,1.6vw,21px);letter-spacing:-.02em}
+#llt-seguir p{margin:0 0 13px;font-size:13px;line-height:1.5;color:#bccad5}
+#llt-seguir button{width:100%;border:0;border-radius:40px;padding:13px 18px;background:#74c6d9;color:#102935;font:inherit;font-weight:750;font-size:14px;cursor:pointer}
+#llt-seguir button:hover,#llt-seguir button:focus-visible{background:#9adbe9}
+#llt-velo{position:fixed;inset:0;z-index:300;opacity:0;transition:opacity .6s ease;pointer-events:none}
+#llt-velo.on{opacity:1}
+body.llt-web .llt-mode-option[data-modo="grupal"]{display:none}
+body.llt-web .llt-choice-grid{grid-template-columns:minmax(0,520px);justify-content:center}

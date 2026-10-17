@@ -3,7 +3,10 @@ import './errors.js';
 import './styles/main.css';
 import './interactive/presentation.css';
 
-const mode = new URLSearchParams(location.search).get('modo');
+const WEB = import.meta.env.MODE === 'web';   // versión web estática: sin servidor de votaciones
+if (WEB) document.body.classList.add('llt-web');
+let mode = new URLSearchParams(location.search).get('modo');
+if (WEB && mode === 'grupal') mode = null;
 const choose = document.getElementById('mode-choice');
 const lobby = document.getElementById('lobby');
 

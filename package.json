@@ -1,0 +1,31 @@
+{
+  "name": "del-campo-al-cristal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Del campo al cristal: recorrido de química industrial del azúcar (portada, máquinas 2D, clarificador LLT 3D con votaciones locales y animación final)",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --test",
+    "check": "node scripts/check-imports.mjs && node scripts/check-offline.mjs && node scripts/extraer-maquinas.mjs --verificar",
+    "serve": "vite preview --host 0.0.0.0",
+    "build:web": "vite build --mode web",
+    "preview:web": "vite preview --mode web --outDir dist-web",
+    "maquinas": "node scripts/extraer-maquinas.mjs"
+  },
+  "dependencies": {
+    "animejs": "3.2.2",
+    "three": "0.186.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}

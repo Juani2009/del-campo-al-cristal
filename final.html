@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eaf1f6">
+<title>Del campo al cristal · Del jugo al azúcar</title>
+</head>
+<body>
+<div id="escena-final" aria-label="Animación de evaporación, cristalización, centrifugación y secado"></div>
+<button id="fin-saltar" type="button" hidden>Ver informe →</button>
+<div id="fin-velo" aria-hidden="true"></div>
+<section id="informe" hidden aria-labelledby="inf-titulo">
+  <div class="inf-in">
+    <div class="inf-top">
+      <div><span class="fin-eyebrow" id="inf-modo">INFORME FINAL</span><h1 id="inf-titulo">Azúcar obtenida</h1></div>
+      <div class="inf-acciones">
+        <button type="button" class="inf-btn alt" id="inf-repetir">↻ Ver la animación de nuevo</button>
+        <a class="inf-btn alt" href="./">Volver al inicio</a>
+        <a class="inf-btn" id="inf-nueva" href="clarificador.html">Nueva simulación →</a>
+      </div>
+    </div>
+    <div id="inf-cuerpo"></div>
+  </div>
+</section>
+<div id="fin-error" hidden role="alert"></div>
+<script type="module" src="/src/final/final.js"></script>
+</body>
+</html>

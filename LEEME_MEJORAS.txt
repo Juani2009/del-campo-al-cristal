@@ -9,7 +9,7 @@ LLT · NUEVA VERSIÓN: MEJORAS
    Si cambiás código más adelante: ejecutá npm run build para regenerar dist.
 
 2. MODO INDIVIDUAL
-   http://localhost:4173/?modo=individual
+   http://localhost:4173/clarificador.html?modo=individual
    También hay un enlace en la sala de espera. No necesita conectarse a otros
    dispositivos ni esperar grupos; cada persona elige las cuatro variables.
    Para mostrarlo por Internet en el futuro haría falta publicar la web individual.
@@ -17,7 +17,7 @@ LLT · NUEVA VERSIÓN: MEJORAS
 3. CALIDAD GRÁFICA
    Modo equilibrado en PC, ligero en celulares. En modo individual hay selector.
    También se puede añadir ?calidad=ligera a la dirección grupal; por ejemplo:
-   http://localhost:4173/?calidad=ligera
+   http://localhost:4173/clarificador.html?calidad=ligera
    Calidad alta con ?calidad=alta. La máquina y su recorrido son los mismos.
 
 4. PANEL DE OBSERVACIÓN

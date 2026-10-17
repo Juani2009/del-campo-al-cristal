@@ -6,6 +6,7 @@ import { VARS, computeResults, animationParams } from './rules.js';
 import { resultView } from './results.js';
 import { cardHTML } from '../components/cards.js';
 import './presentation.css';
+import * as Seguir from './continuar.js';
 
 const GATE = [.165,.195,.405,.545];
 const EPS=.004, WIN_AFTER=.035;
@@ -34,7 +35,7 @@ function repaintCard(){if(active>=0&&snapshot)vcard.innerHTML=cardHTML(adaptStat
 function buildResults(){
   const choices=snapshot?.choices, key=choices?.join(',')||'';
   if(key===resultKey)return;resultKey=key;
-  if(!choices){resEl.innerHTML='';return;}
+  if(!choices){resEl.innerHTML='';Seguir.actualizar(null);return;}
   resEl.innerHTML=`<div class="in">${resultView(choices)}</div>`;
   const button=$('backResult');if(button){button.textContent='Nueva sesión grupal';button.onclick=()=>{
     if(!admin){alert('Reiniciá la experiencia desde el panel de presentadora.');return;}
@@ -42,6 +43,7 @@ function buildResults(){
     socket.emit('llt:reset',{},r=>{if(!r?.ok)alert(r?.error||'No se pudo reiniciar');else scrollTo({top:0});});
   };}
   emit('llt:resultado',animationParams(computeResults(choices)));
+  Seguir.actualizar(choices,{modo:'grupal',epoch:snapshot.epoch});
 }
 function getViewURL(ip,port){return `http://${ip}:${port}/votar`;}
 function renderAddresses(data){
@@ -157,8 +159,8 @@ function tick(p){
   vcard.style.opacity=alpha;vcard.style.visibility=alpha>.01?'visible':'hidden';
   document.body.classList.toggle('vote-on',alpha>.05);
   const ra=snapshot?.choices?clamp((p-.985)/.015):0;
-  resEl.style.opacity=ra;resEl.classList.toggle('on',ra>.5);
-  document.body.classList.toggle('res-on',ra>.05);
+  if(Seguir.SOLO_LLT){resEl.style.opacity=ra;resEl.classList.toggle('on',ra>.5);
+  document.body.classList.toggle('res-on',ra>.05);}else Seguir.setAlpha(ra);
   const missing=$('llt-results-missing');missing.hidden=!(p>.985&&snapshot?.stage==='running'&&!snapshot?.choices);
 }
 $('tbtn').hidden=true;$('tpanel').hidden=true;
