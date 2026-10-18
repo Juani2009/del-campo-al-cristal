@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2b2d30">
+<title>LLT · Clarificador de jugo de caña · Del campo al cristal</title>
+<style>/* fundido desde el recorrido 2D (src/interactive/fundido.js) */
+html::after{content:"";position:fixed;inset:0;background:#000;z-index:2147483000;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .55s ease,visibility 0s linear .55s}
+html.dcc-negro::after{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .45s ease}
+@media(prefers-reduced-motion:reduce){html::after{transition:none!important}}
+</style>
+<script>try{if(sessionStorage.getItem('dcc-fundido')){sessionStorage.removeItem('dcc-fundido');document.documentElement.classList.add('dcc-negro')}}catch(e){}</script>
+</head><body>
+<div id="app"><canvas id="cv"></canvas></div>
+<aside id="hud" aria-live="polite"><b id="t-title"></b><p id="t-line"></p></aside>
+<div id="bar" role="progressbar" aria-label="Progreso del recorrido"><i id="bar-fill"></i></div>
+<div id="scroller"></div>
+<aside id="vcard" aria-live="polite"></aside>
+<section id="res" aria-label="Resultados de la simulación"></section>
+<button id="tbtn" title="Panel de prueba (T)" aria-label="Abrir panel de prueba">⚙</button><aside id="tpanel" hidden></aside>
+<div id="legacy" hidden><input id="op" type="range" min="0" max="1" step="0.001" value="0"><button id="bi"></button><div id="info-title"></div><p id="info-body"></p><button id="play-liquid"></button><button id="toggle-liquid"></button></div>
+<section id="mode-choice" aria-label="Elegir modalidad de la experiencia" hidden>
+ <div class="llt-choice-inner">
+  <div class="llt-eyebrow">CROMPION LLT · EXPERIENCIA INTERACTIVA</div>
+  <h1>¿Cómo querés explorar el proceso?</h1>
+  <p>Conocé cómo se clarifica el jugo de caña. Elegí cómo querés participar.</p>
+  <div class="llt-choice-grid">
+   <a class="llt-mode-option" href="clarificador.html?modo=grupal" data-modo="grupal"><span class="llt-mode-icon" aria-hidden="true">♧</span><strong>Experiencia grupal</strong><span>Los alumnos votan desde sus celulares y deciden juntos los parámetros del proceso.</span><em>Comenzar en grupo →</em></a>
+   <a class="llt-mode-option" href="clarificador.html?modo=individual" data-modo="individual"><span class="llt-mode-icon" aria-hidden="true">◇</span><strong>Experiencia individual</strong><span>Recorré el clarificador, elegí las cuatro variables y descubrí tus resultados.</span><em>Explorar individualmente →</em></a>
+  </div>
+  <small>Simulación educativa · Funciona sin internet en una red local · <a class="llt-solo-link" href="./#siguiente">← Volver al recorrido</a></small>
+ </div>
+</section>
+<section id="lobby" aria-label="Sala de espera LLT" hidden>
+  <div class="llt-lobby-card">
+    <div class="llt-eyebrow">CROMPION LLT · CENTRO DE CONTROL</div>
+    <a class="llt-solo-link" href="clarificador.html">← Volver a elegir modalidad</a>
+    <h1>Clarificación del jugo de caña</h1>
+    <p class="llt-intro">Una experiencia industrial interactiva. Conectate a la red local y participá en las decisiones del proceso.</p>
+    <div class="llt-lobby-grid">
+      <div class="llt-qr-pair">
+        <div class="llt-qr-box"><span class="llt-qr-num">PASO 1 · CONECTARSE</span><img id="llt-wifi-qr" alt="Código QR para solicitar conexión a la red Wi-Fi" hidden><div id="llt-wifi-placeholder" class="llt-qr-placeholder">Configurá el Wi-Fi antes de empezar</div><p>Escaneá y aceptá unirte al Wi-Fi</p></div>
+        <div class="llt-qr-box"><span class="llt-qr-num">PASO 2 · PARTICIPAR</span><img id="llt-qr" alt="Código QR para acceder a la votación sin internet"><p>Escaneá para abrir la votación</p></div>
+      </div>
+      <div class="llt-lobby-side">
+        <span class="llt-eyebrow">PARTICIPANTES CONECTADOS</span>
+        <div class="llt-count"><span id="llt-count">0</span><small>alumnos</small></div>
+        <p id="llt-session-label">Sala de espera · sin nombres</p>
+        <label for="llt-ips">Red local de la computadora</label>
+        <select id="llt-ips" aria-label="Elegir IP de red local"></select>
+        <div id="llt-local-url" class="llt-url" role="status"></div>
+        <button id="llt-refresh-qr" class="llt-minor">↻ Actualizar QR y direcciones</button>
+      </div>
+    </div>
+    <details id="llt-wifi-settings" class="llt-wifi-settings"><summary>⚙ Configurar QR de Wi-Fi (antes de proyectar)</summary>
+      <form id="llt-wifi-form" autocomplete="off"><label>Nombre de la red (SSID)<input id="llt-wifi-name" autocomplete="off" placeholder="Nombre exacto de tu hotspot o router" maxlength="64"></label><label>Contraseña Wi-Fi<input id="llt-wifi-password" type="password" autocomplete="new-password" placeholder="No se mostrará escrita en pantalla"></label><label>Seguridad<select id="llt-wifi-security"><option value="WPA">WPA / WPA2 / WPA3</option><option value="nopass">Red abierta (sin contraseña)</option></select></label><button type="submit">Generar QR de conexión</button><button type="button" id="llt-wifi-clear" class="llt-minor">Quitar QR Wi-Fi</button></form>
+      <p>El código QR Wi-Fi contiene el nombre y la clave de la red. Mostralo solo a los participantes autorizados. Algunos celulares requieren confirmar la conexión o hacerla manualmente.</p>
+    </details>
+    <details id="llt-admin-advanced" class="llt-wifi-settings"><summary>Acceso de presentadora (solo si es necesario)</summary>
+      <form id="llt-admin-login" class="llt-host-login"><label for="llt-pin">PIN de presentadora</label><input id="llt-pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN de la terminal" required><button type="submit">Conectar presentadora</button></form>
+    </details>
+    <p id="llt-host-state" class="llt-host-state">Conectando el centro de control…</p>
+    <div class="llt-lobby-actions"><button id="llt-start" class="llt-primary" disabled>Iniciar experiencia →</button><button id="llt-open-control" class="llt-minor">Abrir panel de control ↗</button></div>
+    <p class="llt-footnote" id="lobby-status" role="status">Conectando con el servidor local…</p>
+  </div>
+</section>
+<div id="llt-results-missing" hidden>Esperando las cuatro decisiones para mostrar el informe final · Revisá el panel de presentadora</div>
+<script type="module" src="/src/main.js"></script>
+</body></html>

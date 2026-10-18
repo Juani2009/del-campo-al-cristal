@@ -1,0 +1,32 @@
+CLARIFICADOR LLT — PRIMERA PRUEBA EN TU LENOVO
+================================================
+
+1. Conservá tu proyecto anterior como respaldo.
+2. Extraé este ZIP en una carpeta NUEVA.
+3. En VS Code abrí exactamente la carpeta del proyecto «del-campo-al-cristal».
+4. En una terminal CMD escribí:
+
+   npm install
+   npm run dev
+
+5. Buscá el PIN DE PRESENTADORA que se imprimirá en la terminal.
+6. Abrí http://localhost:5173/ en Chrome.
+7. Poné el PIN de la terminal en la sala de espera.
+8. Conectá la Lenovo y dos celulares al hotspot del iPhone.
+9. En la sala de espera elegí la IP Wi-Fi de la Lenovo (ejemplo: 172.20.10.x).
+10. Escaneá el QR con los dos celulares, y pulsá Iniciar experiencia.
+11. Hacé scroll: se abren las votaciones en orden, sin bloquear la cámara.
+12. El panel privado está en http://localhost:5173/control.
+
+Con solo dos participantes, dos grupos quedan vacíos. Desde /control,
+abrí cada estación cuando le corresponda y elegí manualmente una opción
+para los grupos sin votos; el sistema distinguirá eso de una votación real.
+
+Si algo no carga, mandame una captura de la TERMINAL COMPLETA
+para diagnosticarlo paso a paso.
+
+IMPORTANTE: las nuevas librerías Socket.IO y QR necesitan descargarse una vez
+con npm install. Después el proyecto funciona sin internet localmente.
+El primer npm install genera el package-lock.json real.
+
+Ver instrucciones completas en README.md.

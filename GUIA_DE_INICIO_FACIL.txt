@@ -1,0 +1,45 @@
+CLARIFICADOR LLT — INICIO FÁCIL Y SEGURO EN WINDOWS
+==================================================
+
+PRIMERA INSTALACIÓN (una sola vez, con internet):
+1. Abrí en VS Code la carpeta del proyecto (del-campo-al-cristal) que contiene package.json.
+2. En terminal CMD: npm install
+3. Ejecutá: npm run build
+4. Para las pruebas: npm run dev (usa puerto 5173)
+
+EL DÍA DE LA EXPOSICIÓN, SIN VS CODE:
+A) Si querés arrancar desde CMD: entrá a esta carpeta con el Explorador de archivos;
+   hacé clic en la barra de direcciones, escribí cmd, pulsá Enter;
+   ejecutá npm run serve; luego abrí http://localhost:4173/.
+B) Para un acceso directo de doble clic, CREADO POR VOS EN WINDOWS:
+   1. Clic derecho en Escritorio → Nuevo → Acceso directo.
+   2. Ubicación: C:\Windows\System32\cmd.exe
+   3. Nombre: INICIAR CLARIFICADOR LLT
+   4. Clic derecho sobre el nuevo acceso → Propiedades.
+   5. En Destino, cambialo a: C:\Windows\System32\cmd.exe /k npm run serve
+   6. En "Iniciar en", poné la ruta COMPLETA a la carpeta del proyecto (del-campo-al-cristal),
+      entre comillas (copiala desde la barra de direcciones del Explorador).
+   7. Aplicar y aceptar. Doble clic → inicia el servidor.
+   8. En el navegador abrí http://localhost:4173/ y guardalo en favoritos.
+
+Este acceso se crea localmente y NO requiere ejecutar el archivo .bat descargado.
+No desactives las protecciones de Windows/Avast para ejecutar scripts bloqueados.
+Si actualizás el proyecto, volvé a ejecutar npm run build antes de npm run serve.
+La Lenovo tiene que mantenerse encendida y el servidor activo mientras se vota.
+
+EXPERIENCIA:
+http://localhost:4173/             Portada y recorrido 2D (inicio de toda la experiencia).
+http://localhost:4173/clarificador.html  Clarificador LLT: elegir grupal o individual.
+http://localhost:4173/clarificador.html?modo=grupal  Sala con ambos QR y participantes.
+http://localhost:4173/clarificador.html?modo=individual Recorrido individual.
+http://localhost:4173/control       Panel de seguimiento de solo lectura.
+
+QR DE WI-FI: en sala grupal expandí "Configurar QR de Wi-Fi" y colocá el SSID
+exacto y la contraseña de la red que van a usar. Esa información queda en
+sessionStorage de ESA pestaña, NO en el servidor. El QR Wi-Fi incluye la
+contraseña, compartilo solo con gente que deba acceder. Algunos celulares
+no permiten unirse directamente por QR y requerirán ajustes manuales.
+
+QR DE VOTO: se genera con IP local del servidor. En modo prueba suele ser
+192.168.x.x o 172.20.10.x; al cambiar de red actualizá la lista.
+El servidor no garantiza cuántos clientes permite el hotspot o router.

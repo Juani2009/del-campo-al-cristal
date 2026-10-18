@@ -1,0 +1,108 @@
+/* Recorrido 2D · distribución y estilo de originales/recorrido_azucar_demo.html,
+   con los tokens de la portada oficial (Inicio_Azucar_Portada_Responsive_v2). */
+.rc-proceso,.rc-end{--ink:#183b51;--muted:#54758a;--teal:#17617c;--btn:#144c65;--line:#dce7e8;--soft:#eef6f4}
+.rc-proceso[hidden],.rc-end[hidden]{display:none}
+.rc-proceso{padding:clamp(40px,6vw,70px) clamp(12px,2.4vw,24px) clamp(60px,8vw,100px);color:var(--ink);scroll-margin-top:0}
+.rc-wrap{max-width:1180px;margin:auto}
+.rc-eyebrow{display:block;color:#59899c;font-size:11px;letter-spacing:2.4px;font-weight:850;text-transform:uppercase}
+.rc-head{text-align:center;margin-bottom:26px}
+.rc-head h2{font-size:clamp(34px,4.6vw,62px);letter-spacing:-.065em;line-height:1.02;margin:12px 0 10px;font-weight:770;color:#163e57}
+.rc-head p{margin:0;color:var(--muted);font-size:clamp(15px,1.3vw,18px)}
+.rc-nav{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.rc-nav button{border:1px solid var(--line);background:#fff;padding:10px 15px;border-radius:24px;color:#5c737a;font:inherit;font-size:14px;font-weight:650;cursor:pointer;transition:background .2s,color .2s}
+.rc-nav button:hover{border-color:#9fcbd5}
+.rc-nav button.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.rc-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #1c6177;border-radius:100px;padding:14px 22px;font:inherit;font-weight:730;font-size:14px;background:var(--btn);color:#fff;text-decoration:none;cursor:pointer;box-shadow:0 10px 24px #15546b30;transition:transform .2s,background .2s}
+.rc-btn:hover{background:#206c84;transform:translateY(-1px)}
+.rc-btn:focus-visible,.rc-nav button:focus-visible{outline:3px solid #2d89a3;outline-offset:3px}
+.rc-btn.alt{background:#eaf3f1;color:#235e61;border-color:#eaf3f1;box-shadow:none}
+.rc-btn.alt:hover{background:#dcece8}
+.rc-btn:disabled{opacity:.42;cursor:default;transform:none}
+.rc-stage{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(20px,3vw,36px);align-items:stretch;background:#fff;border-radius:30px;padding:clamp(16px,3.4vw,40px);box-shadow:0 18px 55px #23555b15;border:1px solid #ffffffd0}
+.rc-copy{display:flex;flex-direction:column;gap:16px;min-width:0}
+.rc-copy h3{font-size:clamp(36px,4.2vw,62px);line-height:1.02;letter-spacing:-.06em;margin:0;font-weight:770;color:#163e57;outline:none}
+.rc-copy p{margin:0;color:var(--muted);line-height:1.72;font-size:1.04rem}
+.rc-facts{display:flex;flex-wrap:wrap;gap:8px}
+.rc-fact{background:var(--soft);color:#3e6d68;border-radius:18px;padding:9px 13px;font-size:.86rem;font-weight:700}
+.rc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+/* tarjeta giratoria: el frente (máquina) fija la altura; el dorso (química) se superpone y desplaza */
+.rc-scene{perspective:1400px;min-width:0}
+.rc-flipper{position:relative;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.75,.2,1)}
+.rc-flipper.flipped{transform:rotateY(180deg)}
+.rc-face{border-radius:25px;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;border:1px solid #d8e5e6;background:linear-gradient(145deg,#e8f5f6,#f9fcfc)}
+.rc-front{position:relative;display:flex;flex-direction:column;gap:12px;padding:14px;min-height:clamp(420px,62vh,640px);height:100%}
+.rc-back{position:absolute;inset:0;transform:rotateY(180deg);background:linear-gradient(140deg,#fffdf6,#e7f4ef);overflow:auto;overscroll-behavior:contain}
+.rc-ill{position:relative;flex:1;min-height:300px;display:grid;place-items:center;overflow:hidden;border-radius:18px;background:#fff}
+.rc-host{max-width:100%}
+.rc-cargando{position:absolute;inset:auto 0 50% 0;text-align:center;color:#6d93a1;font-size:13px;font-weight:650}
+.rc-cargando[hidden]{display:none}
+.rc-ill-label{padding:11px 14px;background:#fff;border-radius:13px;color:#526e77;font-size:.88rem}
+.rc-back-in{padding:clamp(16px,2.4vw,26px);display:flex;flex-direction:column;gap:12px}
+.rc-back h4{font-size:clamp(1.3rem,1.9vw,1.6rem);letter-spacing:-.03em;margin:2px 0 0}
+.rc-intro{margin:0;color:#5e7578;line-height:1.62}
+.rc-molecules{position:relative;height:150px;flex:none;background:#f0ead8;border:1px dashed #d6c7a4;border-radius:20px;overflow:hidden}
+.rc-mol{position:absolute;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-size:.64rem;font-weight:800;color:#25424f;animation:rc-float 5s ease-in-out infinite}
+.rc-mol--agua,.rc-ley--agua{background:#a5d8ef}.rc-mol--sacarosa,.rc-ley--sacarosa{background:#8ac6a0}.rc-mol--imp,.rc-ley--imp{background:#977459;color:#fff}
+.rc-mol--fibra,.rc-ley--fibra{background:#c9b16f}.rc-mol--ca,.rc-ley--ca{background:#e3e9ef;border:2px solid #9fb3c2}.rc-mol--floc,.rc-ley--floc{background:#7d6a4e;color:#fff;border-radius:42% 58% 50% 46%}
+.rc-mol--vapor,.rc-ley--vapor{background:#ffffffd8;border:1px solid #cfdfe6;color:#7a95a1}.rc-mol--miel,.rc-ley--miel{background:#b9772f;color:#fff}.rc-mol--aire,.rc-ley--aire{background:#dbeef7;color:#5f8193}
+.rc-mol--cristal,.rc-ley--cristal{background:#fff;border:2px solid #a7b4bb;width:26px;height:26px;border-radius:0;clip-path:polygon(50% 0,100% 35%,80% 100%,20% 100%,0 35%)}
+@keyframes rc-float{50%{transform:translate(7px,-10px)}}
+.rc-leyenda{margin:-4px 0 0;font-size:11.5px;color:#68817f;line-height:1.7}
+.rc-ley{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px -1px 0;border:0;clip-path:none}
+.rc-sec{background:#ffffffb8;border-radius:16px;border:1px solid #e3ece9}
+.rc-sec summary{cursor:pointer;padding:12px 15px;font-weight:780;font-size:.97rem;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.rc-sec summary::-webkit-details-marker{display:none}
+.rc-sec summary:after{content:"+";font-size:1.2rem;color:#59899c;font-weight:500}
+.rc-sec[open] summary:after{content:"–"}
+.rc-sec-in{padding:0 12px 12px;display:grid;gap:8px}
+.rc-point{background:#fff;padding:10px 13px;border-radius:12px;font-size:.92rem;line-height:1.55;color:#2f4b5b}
+.rc-point p{margin:6px 0 0;color:#5e7578}
+.rc-point dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.88rem}
+.rc-point dt{font-weight:750;color:#3e6d68}.rc-point dd{margin:0;color:#5e7578}
+.rc-flujos{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:start}
+.rc-flujos>div{background:#fff;border-radius:12px;padding:10px 12px}
+.rc-flujos ul{margin:6px 0 0;padding-left:18px;font-size:.9rem;line-height:1.5;color:#2f4b5b}
+.rc-flecha{align-self:center;font-size:1.4rem;color:#59899c}
+.rc-mini{font-size:10px;letter-spacing:.14em;font-weight:850;color:#59899c}
+.rc-tipo{display:inline-block;margin-right:7px;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:800;letter-spacing:.03em;vertical-align:1px}
+.rc-tipo--fisico{background:#dff0f7;color:#21627a}.rc-tipo--quimico{background:#f6e6cf;color:#8a5212}.rc-tipo--biologico{background:#e3f0dc;color:#3f6d31}
+.rc-ecuacion{margin-top:8px;padding:8px 10px;border-radius:10px;background:#f4f7f8;font-family:"Cambria Math","Times New Roman",serif;font-size:1rem;color:#183b51;overflow-x:auto;white-space:nowrap}
+.rc-cond-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.rc-valor{margin-top:4px;font-weight:700;color:#17617c}
+.rc-origen{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:12px;white-space:nowrap}
+.rc-origen--industrial{background:#e6eef7;color:#2f5f86}.rc-origen--simulador{background:#efe6f7;color:#6b3f8f}.rc-origen--cualitativo{background:#eef2ee;color:#58705c}
+.rc-nota{margin:0;font-size:.88rem;color:#5e7578;line-height:1.55}
+.rc-opts{margin:6px 0 0;padding-left:18px;font-size:.88rem;color:#5e7578;line-height:1.5}
+.rc-opts b{color:#2f4b5b}.rc-opts em{color:#3e6d68;font-style:normal;font-weight:700}
+.rc-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+.rc-bottom small{color:#68817f}
+/* sección de transición oscura hacia el clarificador 3D (modelo: .end) */
+.rc-end{padding:clamp(60px,9vw,96px) 20px;background:#0c2132;color:#fff;text-align:center;scroll-margin-top:0}
+.rc-end .rc-eyebrow{color:#8bd0f7}
+.rc-end h2{font-size:clamp(2.3rem,5vw,4rem);letter-spacing:-.05em;margin:14px 0 0}
+.rc-end p{max-width:660px;margin:20px auto 28px;color:#b8cbd3;line-height:1.7}
+.rc-end-modos{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.rc-end .rc-btn{background:#74c6d9;border-color:#74c6d9;color:#102935}
+.rc-end .rc-btn:hover{background:#9adbe9}
+.rc-end .rc-btn.alt{background:transparent;border-color:#5f7f92;color:#cfe3ec}
+@media(max-width:820px){
+  .rc-stage{grid-template-columns:1fr;border-radius:24px}
+  .rc-nav{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;margin:0 -12px 18px;padding:0 12px}
+  .rc-nav button{flex:none}
+  .rc-front{min-height:clamp(380px,58vh,520px)}
+  .rc-back{min-height:100%}
+  .rc-flujos{grid-template-columns:1fr}.rc-flecha{transform:rotate(90deg);justify-self:center}
+}
+@media(max-width:480px){.rc-front{min-height:420px;padding:10px}.rc-back-in{padding:14px}.rc-btn{padding:12px 17px}}
+@media(prefers-reduced-motion:reduce){
+  .rc-flipper{transition:none;transform:none!important}
+  .rc-face{transition:opacity .3s}
+  .rc-back{transform:none;opacity:0;pointer-events:none}
+  .rc-flipper.flipped .rc-back{opacity:1;pointer-events:auto}
+  .rc-flipper.flipped .rc-front{opacity:0}
+  .rc-mol{animation:none}
+}
+/* fundido a negro hacia el clarificador 3D (fundido.js) */
+html::after{content:"";position:fixed;inset:0;background:#000;z-index:2147483000;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
+html.dcc-negro::after{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .45s ease}
+@media(prefers-reduced-motion:reduce){html::after{transition:none!important}}

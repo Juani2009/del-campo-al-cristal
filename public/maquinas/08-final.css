@@ -1,0 +1,18 @@
+/* Extraído de originales/08_Animacion_Final.html (estilos del componente .fin-anim, sin cambios). */
+/* ---- estilos del componente (acotados a .fin-anim) ---- */
+  .fin-anim{display:block;width:100%;height:100%;box-sizing:border-box}
+  .fin-anim *{box-sizing:border-box}
+  .fin-anim__view{position:relative;width:100%;height:100%;overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 40%,#f4f8fb 0%,#e6eef4 60%,#d9e5ee 100%);-webkit-tap-highlight-color:transparent}
+  .fin-anim__bg,.fin-anim__fg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+  .fin-anim__world{position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0;will-change:transform;pointer-events:none}
+  .fin-anim__m{position:absolute;pointer-events:none}
+  .fin-anim__btn{position:absolute;right:12px;bottom:12px;width:36px;height:36px;padding:0;border:0;border-radius:50%;
+    background:rgba(255,255,255,.85);color:#4b6579;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 1px rgba(75,101,121,.18);opacity:.6;transition:opacity .2s,background .2s;z-index:5}
+  .fin-anim__btn:hover,.fin-anim__btn:focus-visible{opacity:1;background:#fff}
+  .fin-anim__btn:focus-visible{outline:2px solid #5b9bd5;outline-offset:2px}
+  .fin-anim__btn svg{width:16px;height:16px;fill:currentColor;display:block}
+  .fin-anim__m .evap-anim__btn,.fin-anim__m .crist-anim__btn,.fin-anim__m .cent-anim__btn,.fin-anim__m .sec-anim__btn{display:none!important}
+  .fin-anim__m .sec-anim__dis{display:none!important}
+  .fin-anim__bag{position:absolute;display:block;pointer-events:none;user-select:none}
