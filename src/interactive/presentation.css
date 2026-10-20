@@ -82,3 +82,6 @@ body.llt-web .llt-choice-grid{grid-template-columns:minmax(0,520px);justify-cont
 #llt-final{position:fixed;inset:0;width:100%;height:100%;border:0;z-index:300;opacity:0;pointer-events:none;background:transparent;transition:opacity .7s ease}
 #llt-final.on{opacity:1;pointer-events:auto}
 body.llt-en-final{overflow:hidden}
+#llt-volver-sala{position:fixed;z-index:9;right:clamp(12px,2vw,28px);top:calc(clamp(12px,2vw,24px) + env(safe-area-inset-top,0px));padding:8px 13px;border-radius:20px;border:1px solid #5f7f92;background:rgba(44,52,60,.85);color:#dbeaf3;font:600 12.5px system-ui,-apple-system,'Segoe UI',sans-serif;cursor:pointer;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+#llt-volver-sala:hover{border-color:#9ac7e8;color:#fff}
+#llt-volver-sala[hidden]{display:none}
