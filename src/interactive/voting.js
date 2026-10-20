@@ -150,20 +150,21 @@ socket.on('disconnect',()=>{admin=false;info.textContent='Conexión perdida. Rei
 socket.on('llt:state',onState);
 socket.on('llt:admin',()=>{admin=true;setLogin();});
 
-/* Botón «Volver a configurar QR»: solo al comienzo del 3D, antes de abrir la primera votación.
-   Devuelve la sesión a la sala de espera (los celulares siguen conectados; no hay votos que perder). */
+/* Botón «Volver a configurar QR»: visible durante todo el recorrido 3D grupal (pantalla de la presentadora).
+   Devuelve la sesión a la sala de espera; los celulares siguen conectados y los votos se reinician. */
 const volver=document.createElement('button');
 volver.id='llt-volver-sala';volver.type='button';volver.textContent='← Volver a configurar QR';volver.hidden=true;
 document.body.appendChild(volver);
 volver.onclick=()=>{
   if(!admin)return;
-  if(!confirm('¿Volver a la sala de espera para configurar el Wi-Fi y los QR?\nLos celulares siguen conectados y después podés iniciar de nuevo.'))return;
+  const hayVotos=snapshot?.stations?.some(st=>st.status!=='pending');
+  if(!confirm('¿Volver a la sala de espera para configurar el Wi-Fi y los QR?\nLos celulares siguen conectados y después podés iniciar de nuevo.'+(hayVotos?'\n\nAtención: se borrarán los votos ya registrados.':'')))return;
   volver.disabled=true;
   socket.emit('llt:reset',{},r=>{volver.disabled=false;if(!r?.ok)alert(r?.error||'No se pudo volver a la sala');});
 };
 function tick(p){
   progress=p;
-  volver.hidden=!(snapshot?.stage==='running'&&admin&&p<GATE[0]-.03&&snapshot.stations.every(st=>st.status==='pending'));
+  volver.hidden=!(snapshot?.stage==='running'&&admin);
   if(snapshot?.stage==='running'&&admin&&socket.connected){
     for(let i=0;i<GATE.length;i++)if(p>=GATE[i]-EPS&&snapshot.stations[i].status==='pending'&&!requested.has(i)&&Date.now()>=retryAt[i]){
       requested.add(i);socket.emit('llt:open',{i},r=>{
