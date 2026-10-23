@@ -43,11 +43,12 @@ export function conclusion(ch) {
   return (good.length ? 'Sin penalización: ' + good.join(', ') + '. ' : '') + (bad.length ? 'Perjudicaron: ' + bad.join('; ') + '.' : 'Ninguna decisión perjudicó el proceso simulado.');
 }
 
-/* ---------- sesión grupal: registro → reparto automático → estaciones SECUENCIALES (mismo código en servidor y demo) ---------- */
+/* ---------- sesión grupal: registro → todos votan en cada estación → estaciones SECUENCIALES (mismo código en servidor y demo) ---------- */
 export const HOST_ACTIONS = ['start', 'begin', 'close', 'tiebreak', 'useref', 'results', 'reset'];
 const fresh = () => VARS.map(() => ({ began: false, open: false, rounds: [{}], allowed: [0, 1, 2], res: null }));
 export const newState = code => ({ code, stage: 'lobby', order: [], parts: {}, st: fresh() });   // stage: lobby | running | results
-export const groupCounts = s => { const c = [0, 0, 0, 0]; Object.values(s.parts).forEach(p => p.g !== null && c[p.g]++); return c; };
+/** Votantes por estación: sin grupos, cada estación la votan todos los participantes registrados. */
+export const groupCounts = s => { const n = s.stage === 'lobby' ? 0 : s.order.length; return [n, n, n, n]; };
 const cur = st => st.rounds[st.rounds.length - 1];
 export const tally = st => { const c = [0, 0, 0]; Object.values(cur(st)).forEach(o => c[o]++); return c; };
 export const votesIn = st => Object.keys(cur(st)).length;
@@ -59,35 +60,31 @@ export const decided = x => x.res && (x.res.k === 'winner' || x.res.k === 'ref')
 export const choicesOf = s => s.st.every(decided) ? s.st.map(x => x.res.idx) : null;
 export const nextStation = s => s.st.findIndex(x => !x.began);   // -1 si ya comenzaron todas
 
-/** Reparto equilibrado: participante k → grupo k % 4 (tamaños que difieren como máximo en 1). Se conserva toda la sesión. */
-export function assignGroups(s) { s.order.forEach((pid, k) => s.parts[pid].g = k % 4); }
-
 export function reduce(s, a) {   // devuelve { ok } | { ok:false, err }
   const no = err => ({ ok: false, err }), yes = { ok: true };
   switch (a.t) {
     case 'join': if (!a.pid) return no('Falta identificador');
-      if (!s.parts[a.pid]) { s.parts[a.pid] = { g: null }; s.order.push(a.pid);
-        if (s.stage !== 'lobby') { const c = groupCounts(s); s.parts[a.pid].g = c.indexOf(Math.min(...c)); } }   // quien llega tarde entra al grupo más chico
-      return yes;   // volver a entrar conserva el grupo
+      if (!s.parts[a.pid]) { s.parts[a.pid] = {}; s.order.push(a.pid); }   // quien llega tarde también vota en las estaciones que faltan
+      return yes;   // volver a entrar conserva los votos
     case 'start': if (s.stage !== 'lobby') return no('Ya comenzó'); if (!s.order.length) return no('Sin participantes');
-      assignGroups(s); s.stage = 'running'; return yes;
+      s.stage = 'running'; return yes;
     case 'begin': { if (s.stage !== 'running') return no('La sesión no comenzó'); const i = a.i ?? nextStation(s);
       if (i < 0 || i > 3 || s.st[i].began) return no('Estación no disponible'); if (!s.st.slice(0, i).every(decided)) return no('Primero debe decidirse la estación anterior');
       const st = s.st[i]; st.began = true; if (groupCounts(s)[i] === 0) st.res = { k: 'empty' }; else st.open = true; return yes; }
-    case 'vote': { const p = s.parts[a.pid]; if (!p || p.g === null) return no('No estás en un grupo'); const st = s.st[p.g];
-      if (s.stage !== 'running' || !st.open) return no('Tu grupo no está votando ahora'); if (!st.allowed.includes(a.opt)) return no('Opción no permitida');
+    case 'vote': { if (!s.parts[a.pid]) return no('No estás registrado'); const i = a.i ?? s.st.findIndex(x => x.open), st = s.st[i];
+      if (s.stage !== 'running' || !st || !st.open) return no('No hay una votación abierta ahora'); if (!st.allowed.includes(a.opt)) return no('Opción no permitida');
       if (a.pid in cur(st)) return no('Ya votaste'); cur(st)[a.pid] = a.opt;
-      if (votesIn(st) >= groupCounts(s)[p.g]) { st.open = false; st.res = resolve(st); }   // votaron todos los integrantes registrados → se cierra
+      if (votesIn(st) >= groupCounts(s)[i]) { st.open = false; st.res = resolve(st); }   // votaron todos los participantes registrados → se cierra
       return yes; }
     case 'close': s.st.forEach(x => { if (x.open) { x.open = false; x.res = resolve(x); } }); return yes;   // la presentadora cierra con los votos recibidos
     case 'tiebreak': s.st.forEach(x => { if (x.res && x.res.k === 'tie') { x.allowed = x.res.tied; x.rounds.push({}); x.open = true; x.res = null; } }); return yes;
     case 'useref': s.st.forEach((x, i) => { if (x.res && x.res.k === 'empty') x.res = { k: 'ref', idx: VARS[i].ref }; }); return yes;   // autorización explícita
     case 'results': if (!choicesOf(s)) return no('Faltan decisiones'); s.stage = 'results'; return yes;
-    case 'reset': s.stage = 'lobby'; s.st = fresh(); Object.values(s.parts).forEach(p => p.g = null); return yes;   // los participantes siguen registrados
+    case 'reset': s.stage = 'lobby'; s.st = fresh(); return yes;   // los participantes siguen registrados
   } return no('Acción desconocida');
 }
 export function pub(s, pid) {
   const me = s.parts[pid];
-  return { code: s.code, stage: s.stage, n: s.order.length, gc: groupCounts(s), me: me ? { g: me.g } : null, my: s.st.map(x => cur(x)[pid]), next: nextStation(s),
+  return { code: s.code, stage: s.stage, n: s.order.length, gc: groupCounts(s), me: me ? {} : null, my: s.st.map(x => cur(x)[pid]), next: nextStation(s),
     st: s.st.map(x => ({ began: x.began, open: x.open, round: x.rounds.length, allowed: x.allowed, counts: tally(x), voted: votesIn(x), res: x.res })), ch: choicesOf(s) };
 }

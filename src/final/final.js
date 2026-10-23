@@ -49,7 +49,7 @@ async function datosGrupales() {
       if (!estado) return;
       if (guardado?.modo === 'grupal' && guardado.epoch && guardado.epoch !== estado.epoch) return fin({ error: 'La sesión de votación cambió (se reinició) después de terminar el clarificador. Volvé a realizar la experiencia.' });
       const ch = choicesValidos(estado.choices);
-      if (!ch) return fin({ error: 'El servidor todavía no tiene registradas las cuatro decisiones de los grupos.' });
+      if (!ch) return fin({ error: 'El servidor todavía no tiene registradas las cuatro decisiones del grupo.' });
       // Con acceso de presentadora llega el conteo por opción; se espera un instante por él.
       setTimeout(() => fin({ choices: ch, estado: admin || estado }), admin ? 0 : 400);
     };
@@ -77,12 +77,12 @@ function filaDecision(i, idx, st) {
   let det = '';
   if (st) {
     const partes = [`<span class="inf-tag">${esc(RESOL[st.resolution] || 'Decisión registrada')}</span>`];
-    if (st.resolution !== 'seleccion_manual_sin_votos') partes.push(`<span>${st.voted} de ${st.total} integrantes votaron</span>`);
+    if (st.resolution !== 'seleccion_manual_sin_votos') partes.push(`<span>${st.voted} de ${st.total} participantes votaron</span>`);
     if (st.resolution === 'desempate_referencia' && st.tied?.length) partes.push(`<span>Empataron: ${st.tied.map(j => esc(v.opts[j].l)).join(' y ')}</span>`);
     if (Array.isArray(st.counts)) partes.push(`<span>Votos: ${st.counts.map((n, j) => `${esc(v.opts[j].l)} = ${n}`).join(' · ')}</span>`);
     det = `<div class="inf-det">${partes.join('')}</div>`;
   }
-  return `<li><div class="inf-dec-top"><span class="inf-num">${st ? 'GRUPO' : 'ESTACIÓN'} ${i + 1}</span><strong>${esc(v.name)}: ${esc(o.l)}</strong></div><p>${esc(o.t)}</p>${det}</li>`;
+  return `<li><div class="inf-dec-top"><span class="inf-num">ESTACIÓN ${i + 1}</span><strong>${esc(v.name)}: ${esc(o.l)}</strong></div><p>${esc(o.t)}</p>${det}</li>`;
 }
 function informe(ch, estado) {
   const r = computeResults(ch), q = calidadDesdeResultados(r), cat = categoria(q);
@@ -105,7 +105,7 @@ function informe(ch, estado) {
       <p class="inf-nota">La tonalidad se obtiene del índice de color calculado por el simulador (${r.color}/100), ubicado entre el menor (${COLOR_MIN}) y el mayor (${COLOR_MAX}) valor que permite el modelo. Es una simulación didáctica, no una medición industrial.</p>
     </div>
   </div>
-  <h2 class="inf-h2">${estado ? 'Decisiones de los grupos' : 'Tus decisiones'}</h2>
+  <h2 class="inf-h2">${estado ? 'Decisiones del grupo' : 'Tus decisiones'}</h2>
   <ol class="inf-decisiones">${ch.map((idx, i) => filaDecision(i, idx, estado?.stations?.[i])).join('')}</ol>
   <h2 class="inf-h2">Indicadores del clarificador (simulador)</h2>
   <div class="inf-metricas">

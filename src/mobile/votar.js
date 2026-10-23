@@ -19,23 +19,26 @@ function render(){
   if(!socket.connected){panel.innerHTML='<span class="label">RECONEXIÓN</span><h1>Esperando conexión local…</h1><p>Conectate al Wi-Fi del hotspot y mantené abierta esta página.</p>';return;}
   if(!member||!state){panel.innerHTML='<h1>Entrando a la sala de espera…</h1><p>No necesitás escribir tu nombre.</p>';return;}
   if(state.stage==='lobby'){
-    panel.innerHTML='<span class="label">LLT · SALA DE ESPERA</span><h1>¡Ya estás participando!</h1><p>La presentadora está esperando a los demás. Cuando comience la experiencia, aparecerá tu grupo automáticamente.</p><div class="done-symbol">✓</div><p>No cierres esta página. No necesitás internet.</p>';
+    panel.innerHTML='<span class="label">LLT · SALA DE ESPERA</span><h1>¡Ya estás participando!</h1><p>La presentadora está esperando a los demás. Cuando comience la experiencia, vas a votar en cada una de las cuatro estaciones.</p><div class="done-symbol">✓</div><p>No cierres esta página. No necesitás internet.</p>';
     return;
   }
-  if(member.spectator||!member.assigned){panel.innerHTML='<span class="label">SESIÓN EN CURSO</span><h1>La experiencia ya comenzó</h1><p>Este dispositivo no estaba registrado cuando se formaron los grupos. Podrás ingresar en la próxima sesión.</p>';return;}
-  const g=member.group,st=member.station;
-  if(g===null||!st){panel.innerHTML='<h1>Esperando grupo…</h1>';return;}
-  const pre=`<span class="label">GRUPO ${String(g+1).padStart(2,'0')} · ${labels[g]}</span><div class="group-circle">${String(g+1).padStart(2,'0')}</div>`;
+  if(member.spectator||!member.assigned){panel.innerHTML='<span class="label">SESIÓN EN CURSO</span><h1>La experiencia ya comenzó</h1><p>Este dispositivo no estaba conectado cuando empezó la votación. Podrás ingresar en la próxima sesión.</p>';return;}
+  const st=member.station;
+  if(!st){panel.innerHTML='<h1>Esperando la primera estación…</h1>';return;}
+  // Todos votan en las cuatro estaciones: se muestra la estación en curso.
+  const g=st.index,last=g===labels.length-1;
+  const pre=`<span class="label">ESTACIÓN ${String(g+1).padStart(2,'0')} / 04 · ${labels[g]}</span><div class="group-circle">${String(g+1).padStart(2,'0')}</div>`;
+  const next=member.finished?'Terminaron las cuatro votaciones. ¡Gracias por participar!':`Esperá: cuando la presentadora llegue a la estación ${g+2}, la pregunta aparecerá automáticamente.`;
   if(st.votedAlready){
-    panel.innerHTML=pre+`<div class="done-symbol">✓</div><h1>¡Voto registrado!</h1><p>Tu elección se guardó correctamente. ${st.status==='open'?'Esperá a que tus compañeros terminen de votar.':'La estación ya terminó.'}</p>`;
+    panel.innerHTML=pre+`<div class="done-symbol">✓</div><h1>¡Voto registrado!</h1><p>Tu elección se guardó correctamente. ${st.status==='open'?'Esperá a que los demás terminen de votar.':last?next:'La estación ya terminó. '+next}</p>`;
     return;
   }
   if(st.status==='pending'){
-    panel.innerHTML=pre+`<h1>Tu equipo decidirá ${labels[g].toLowerCase()}</h1><p>Esperá a que la presentadora llegue a esta estación del clarificador. La pregunta aparecerá automáticamente.</p>`;
+    panel.innerHTML=pre+`<h1>Vas a decidir las cuatro variables</h1><p>Esperá a que la presentadora llegue a la primera estación del clarificador (${labels[g].toLowerCase()}). La pregunta aparecerá automáticamente.</p>`;
     return;
   }
   if(st.status==='empty'||st.status==='closed'){
-    panel.innerHTML=pre+`<h1>Esta estación terminó</h1><p>No se registró un voto de este dispositivo. La presentadora continuará con los resultados disponibles.</p>`;
+    panel.innerHTML=pre+`<h1>Esta estación terminó</h1><p>No se registró un voto de este dispositivo. ${next}</p>`;
     return;
   }
   panel.innerHTML=pre+`<h1>${htmlSafe(st.question)}</h1><p>Seleccioná una alternativa y confirmá tu voto. No podrás cambiarlo después.</p><div class="vote-options">${st.options.map((o,i)=>`<button type="button" class="vote-option ${picked===i?'selected':''}" data-choice="${i}" aria-pressed="${picked===i}">${htmlSafe(o)}<span>${picked===i?'✓':''}</span></button>`).join('')}</div><button id="vote-send" type="button" class="primary vote-submit" ${picked===null||sending?'disabled':''}>Confirmar mi voto</button>`;
@@ -66,5 +69,5 @@ socket.on('llt:state',s=>{
   if(state?.epoch!==s.epoch){picked=null;sending=false;}
   state=s;render();
 });
-socket.on('llt:member',m=>{if(member?.epoch!==m.epoch||member?.station?.status!==m.station?.status)picked=null;member=m;render();});
+socket.on('llt:member',m=>{if(member?.epoch!==m.epoch||member?.station?.index!==m.station?.index||member?.station?.status!==m.station?.status)picked=null;member=m;render();});
 render();

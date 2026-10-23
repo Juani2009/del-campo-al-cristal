@@ -90,7 +90,7 @@ function fichaQuimica(e) {
   const aditivos = q.aditivos.ninguno ? `<div class="rc-point">${esc(q.aditivos.ninguno)}</div>` :
     q.aditivos.lista.map(a => `<div class="rc-point"><strong>${esc(a.nombre)}</strong><dl><dt>Para qué</dt><dd>${esc(a.para)}</dd><dt>Cómo actúa</dt><dd>${esc(a.como)}</dd><dt>Si falta o sobra</dt><dd>${esc(a.limite)}</dd></dl></div>`).join('');
   const cond = q.condiciones.map(c => `<div class="rc-point"><div class="rc-cond-top"><strong>${esc(c.variable)}</strong>${badge(c.origen)}</div><div class="rc-valor">${esc(c.valor)}</div><p>${esc(c.porque)}</p></div>`).join('');
-  const sim = q.simulador ? seccion('En el simulador LLT 3D', `<p class="rc-nota">${badge('simulador')} Estas son las cuatro variables que votarán los grupos, con los efectos tal como están programados en el simulador. Son estimaciones didácticas, no mediciones de una fábrica.</p>` +
+  const sim = q.simulador ? seccion('En el simulador LLT 3D', `<p class="rc-nota">${badge('simulador')} Estas son las cuatro variables que votarán todos los participantes, con los efectos tal como están programados en el simulador. Son estimaciones didácticas, no mediciones de una fábrica.</p>` +
     VARS.map(v => `<div class="rc-point"><strong>${esc(v.name)}</strong> · ${esc(v.q)}<p>${esc(v.sci)}</p><ul class="rc-opts">${v.opts.map((o, j) => `<li><b>${esc(o.l)}</b>${j === v.ref ? ' <em>(referencia)</em>' : ''}: ${esc(o.t)}</li>`).join('')}</ul></div>`).join('')) : '';
   return `<div class="rc-back-in">
     <span class="rc-eyebrow">Dentro del proceso · Etapa ${String(e.n).padStart(2, '0')}</span>
