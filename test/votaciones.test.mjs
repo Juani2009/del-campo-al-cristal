@@ -4,43 +4,53 @@ import {randomUUID} from 'node:crypto';
 import {makeEngine,REFERENCE_INDEX} from '../server/engine.js';
 import {cardHTML} from '../src/components/cards.js';
 const setup = n => {
-  const saved=[];const e=makeEngine(null,s=>saved.push(structuredClone(s)),()=>0);
+  const saved=[];const e=makeEngine(null,s=>saved.push(structuredClone(s)));
   const ids=Array.from({length:n},()=>randomUUID());
   ids.forEach((id,i)=>assert.equal(e.join(id,'sock-'+i).ok,true));
   return {e,ids,saved};
 };
-const groupIds=(e,ids,g)=>ids.filter(id=>e.load().participants[id]?.group===g);
+const allVote=(e,ids,i,opts)=>ids.forEach((id,k)=>assert.equal(e.vote(id,i,opts[k%opts.length]).ok,true));
 
-test('El reparto con 16, 15, 2 y 1 celular es equilibrado y sin nombres',()=>{
-  for(const n of [16,15,2,1]){
+test('Sin grupos: con 6, 2 y 1 celular todos votan en cada estación',()=>{
+  for(const n of [6,2,1]){
     const {e,ids}=setup(n);assert.equal(e.start().ok,true);
     assert.equal(e.publicState().registered,n);
-    const g=e.publicState().groups;assert.equal(g.reduce((a,b)=>a+b,0),n);
-    assert.ok(Math.max(...g)-Math.min(...g)<=1);
-    assert.ok(ids.every(id=>Number.isInteger(e.member(id).group)));
+    assert.deepEqual(e.publicState().groups,[n,n,n,n]);
+    for(let i=0;i<4;i++){
+      assert.equal(e.open(i).ok,true);
+      assert.ok(ids.every(id=>e.member(id).station.index===i&&e.member(id).station.status==='open'));
+      allVote(e,ids,i,[1]);
+      assert.equal(e.publicState().stations[i].status,'closed');
+      assert.equal(e.publicState().stations[i].voted,n);
+    }
+    assert.deepEqual(e.picks(),[1,1,1,1]);
+    assert.ok(ids.every(id=>e.member(id).finished&&e.member(id).votedCount===4));
   }
 });
 
-test('Solo vota el grupo correcto, una vez, y cierra automáticamente al completar',()=>{
-  const {e,ids}=setup(8);e.start();e.open(0);
-  const [id1,id2]=groupIds(e,ids,0),other=groupIds(e,ids,1)[0];
-  assert.equal(e.vote(other,0,1).ok,false);
+test('Cada participante vota una vez por estación y se cierra al votar todos',()=>{
+  const {e,ids}=setup(3);e.start();e.open(0);
+  const [id1,id2,id3]=ids;
+  assert.equal(e.vote(id1,1,1).ok,false);   // estación todavía no abierta
   assert.equal(e.vote(id1,0,100).ok,false);
   assert.equal(e.vote(id1,0,1).ok,true);
   assert.equal(e.vote(id1,0,2).ok,false);
-  assert.equal(e.publicState().stations[0].status,'open');
   assert.equal(e.vote(id2,0,1).ok,true);
+  assert.equal(e.publicState().stations[0].status,'open');
+  assert.equal(e.vote(id3,0,0).ok,true);
   assert.equal(e.publicState().stations[0].winner,1);
   assert.equal(e.publicState().stations[0].status,'closed');
   assert.equal(e.vote(id1,0,1).ok,false);
   assert.equal(e.open(0).already,true);
+  // Entre estaciones el celular muestra la que terminó; al abrir la siguiente, la nueva pregunta.
+  assert.equal(e.member(id1).station.index,0);
+  e.open(1);assert.equal(e.member(id1).station.index,1);assert.equal(e.member(id1).station.votedAlready,false);
 });
 
 test('Empate 2-2 favorece el valor de referencia (NO segunda ronda)',()=>{
-  const {e,ids}=setup(16);e.start();e.open(0);
-  groupIds(e,ids,0).forEach(id=>e.vote(id,0,1));e.open(1);
-  const g=groupIds(e,ids,1);assert.equal(g.length,4);
-  [0,0,1,1].forEach((o,k)=>e.vote(g[k],1,o));
+  const {e,ids}=setup(4);e.start();e.open(0);
+  allVote(e,ids,0,[1]);e.open(1);
+  allVote(e,ids,1,[0,0,1,1]);
   const s=e.publicState().stations[1];
   assert.equal(s.winner,REFERENCE_INDEX[1]);assert.equal(s.resolution,'desempate_referencia');
 });
@@ -49,16 +59,16 @@ test('Scroll libre, votaciones secuenciales: siguiente estación espera resultad
   const {e,ids}=setup(4);e.start();
   assert.equal(e.open(2).ok,false);assert.equal(e.open(0).ok,true);
   assert.equal(e.open(1).ok,false);
-  e.vote(groupIds(e,ids,0)[0],0,1);
+  allVote(e,ids,0,[1]);
   assert.equal(e.open(1).ok,true);
   assert.equal(e.publicState().stations[1].status,'open');
 });
 
-test('Con dos alumnos dos grupos sin participantes; requieren decisión manual',()=>{
+test('Estación cerrada sin votos requiere decisión manual',()=>{
   const {e,ids}=setup(2);e.start();
-  e.open(0);e.vote(groupIds(e,ids,0)[0],0,1);
-  e.open(1);e.vote(groupIds(e,ids,1)[0],1,1);
-  e.open(2);
+  e.open(0);allVote(e,ids,0,[1]);
+  e.open(1);allVote(e,ids,1,[1]);
+  e.open(2);e.close(2);
   assert.equal(e.publicState().stations[2].status,'empty');
   assert.equal(e.publicState().stations[2].winner,null);
   assert.equal(e.resolveEmpty(2,1).ok,true);
@@ -73,9 +83,9 @@ test('Cierre con cero votos nunca inventa ganador',()=>{
   assert.equal(e.publicState().stations[0].winner,null);
 });
 
-test('Reingreso mismo identificador conserva grupo y voto; invitados tardíos no se asignan',()=>{
+test('Reingreso mismo identificador conserva el voto; invitados tardíos no se asignan',()=>{
   const {e,ids}=setup(4);e.start();e.open(0);
-  const id=groupIds(e,ids,0)[0];e.vote(id,0,0);
+  const id=ids[0];e.vote(id,0,0);
   e.leave(id,`sock-${ids.indexOf(id)}`);
   const again=e.join(id,'new-socket');
   assert.equal(again.ok,true);assert.equal(again.state.station.votedAlready,true);
@@ -87,7 +97,7 @@ test('Reingreso mismo identificador conserva grupo y voto; invitados tardíos no
 
 test('Persistencia recupera elecciones y reset conserva solo conectados, no los votos',()=>{
   const {e,ids,saved}=setup(4);e.start();e.open(0);
-  const g=groupIds(e,ids,0)[0];e.vote(g,0,2);
+  const g=ids[0];e.vote(g,0,2);
   const restored=makeEngine(structuredClone(saved.at(-1)),()=>{});
   assert.equal(restored.member(g).station.votedAlready,true);
   const old=restored.load().epoch;e.reset();
@@ -97,7 +107,7 @@ test('Persistencia recupera elecciones y reset conserva solo conectados, no los 
 });
 
 test('Tarjeta original acepta snapshot del servidor y muestra ganador real',()=>{
-  const {e,ids}=setup(4);e.start();e.open(0);e.vote(groupIds(e,ids,0)[0],0,1);
+  const {e,ids}=setup(4);e.start();e.open(0);allVote(e,ids,0,[1]);
   const p=e.publicState(),S={gc:p.groups,st:p.stations.map(st=>({status:st.status,open:st.open,voted:st.voted,res:st.winner===null?null:{k:'winner',idx:st.winner},allowed:[0,1,2],rounds:[{}]}))};
   const h=cardHTML(S,0);assert.ok(h.includes('✓ 7,2'));assert.ok(h.includes('ESTACIÓN 1 / 4'));
 });

@@ -30,7 +30,7 @@ function render(){
     if(done)extra=`<p>Ganadora: <b>${options[i][st.winner]}</b> · ${st.resolution==='desempate_referencia'?'Desempate por referencia didáctica':st.resolution==='seleccion_manual_sin_votos'?'Selección manual sin votos':'Mayoría de votos'}</p>`;
     if(empty&&admin)extra=`<p>Esta estación no tiene votos. Elegí una alternativa para continuar. El sistema indicará que fue una selección manual.</p><select id="ref-${i}">${options[i].map((o,k)=>`<option value="${k}" ${k===refs[i]?'selected':''}>${o}</option>`).join('')}</select> <button data-resolve="${i}">Confirmar selección manual</button>`;
     if(done&&st.resolution==='desempate_referencia')extra+='<p>Empate resuelto con valor didáctico predefinido.</p>';
-    return `<article class="group-panel"><div class="group-status">ESTACIÓN 0${i+1} · ${words[st.status]}</div><h2>${names[i]}</h2><p>Grupo 0${i+1} · ${st.total} asignados · ${state.onlineGroups?.[i]??0} conectados</p><div class="group-stat">Votos confirmados: <b>${st.voted} / ${st.total}</b></div>${extra}<div class="group-buttons">${admin&&pending&&state.stage==='running'?`<button data-open="${i}">Abrir estación</button>`:''}${admin&&st.status==='open'?`<button data-close="${i}">Cerrar con votos recibidos</button>`:''}</div></article>`;
+    return `<article class="group-panel"><div class="group-status">ESTACIÓN 0${i+1} · ${words[st.status]}</div><h2>${names[i]}</h2><p>Votan todos · ${st.total} participantes · ${state.onlineGroups?.[i]??0} conectados</p><div class="group-stat">Votos confirmados: <b>${st.voted} / ${st.total}</b></div>${extra}<div class="group-buttons">${admin&&pending&&state.stage==='running'?`<button data-open="${i}">Abrir estación</button>`:''}${admin&&st.status==='open'?`<button data-close="${i}">Cerrar con votos recibidos</button>`:''}</div></article>`;
   }).join('');
   $('admin-groups').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>action('open',{i:Number(b.dataset.open)}));
   $('admin-groups').querySelectorAll('[data-close]').forEach(b=>{
@@ -50,7 +50,7 @@ $('admin-login').onsubmit=async ev=>{
   }catch{message('No se pudo contactar al servidor');}
 };
 $('admin-start').onclick=()=>action('start');
-$('admin-reset').onclick=()=>{if(confirm('¿Reiniciar toda la experiencia? Se eliminarán todos los votos y grupos anteriores.'))action('reset');};
+$('admin-reset').onclick=()=>{if(confirm('¿Reiniciar toda la experiencia? Se eliminarán todos los votos anteriores.'))action('reset');};
 $('admin-logout').onclick=async()=>{await fetch('/api/logout',{method:'POST'});admin=false;socket.disconnect().connect();render();message('Sesión de presentadora cerrada.');};
 socket.on('connect',()=>{$('connection').textContent='● Red local activa';$('connection').classList.add('ok');fetch('/api/me').then(r=>r.json()).then(d=>{admin=!!d.admin;render();});});
 socket.on('disconnect',()=>{$('connection').textContent='○ Reconectando';$('connection').classList.remove('ok');});

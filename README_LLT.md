@@ -37,8 +37,8 @@ Si querés probar en el colegio sin abrir VS Code, ejecutá **una vez** `npm run
 1. Conectá la Lenovo al hotspot/router local. Si cambió la red, reiniciá el servidor y elegí la nueva IP en la sala.
 2. Usá `localhost` en la propia Lenovo, abrí **Grupal** y expandí «Configurar QR de Wi-Fi». Ingresá nombre y contraseña de la red seleccionada, generá QR y colapsá la configuración.
 3. Los alumnos escanean el QR de Wi-Fi y confirman (o se conectan manualmente). Después escanean el QR «Participar».
-4. Cuando veas a los participantes conectados, presioná «Iniciar experiencia». Se asignan cuatro grupos equilibrados sin pedir nombres. El recorrido y el líquido siguen con scroll libre; el servidor abre cada estación cuando corresponde.
-5. Tu compañero puede mirar `http://IP-DE-LENOVO:5173/control` sin PIN. No necesita cargar votos ni resultados. El sistema cierra al recibir todos los votos o tras 60 segundos. Si grupos están vacíos, requiere una selección explícita de administración, identificada como manual.
+4. Cuando veas a los participantes conectados, presioná «Iniciar experiencia». Todos los celulares conectados votan en cada una de las cuatro estaciones (pensado para unas 6 personas), sin pedir nombres. El recorrido y el líquido siguen con scroll libre; el servidor abre cada estación cuando corresponde.
+5. Tu compañero puede mirar `http://IP-DE-LENOVO:5173/control` sin PIN. No necesita cargar votos ni resultados. El sistema cierra al recibir todos los votos o tras 60 segundos. Si una estación queda sin votos, requiere una selección explícita de administración, identificada como manual.
 6. Para repetir, abrí Administración desde `/control`, iniciá sesión y confirmá «Reiniciar toda la experiencia».
 
 **Capacidad de dispositivos:** el motor permite más de 20 participantes, pero la capacidad real de conexiones del hotspot/router NO está garantizada; probá 18–20 equipos antes de exponer. Algunos extensores requieren un router principal. Si el celular no abre la URL, revisá que esté en la misma red, que no haya aislamiento de clientes y que Avast permita el acceso en tu red privada confiable. Nunca desactives todo el firewall.
@@ -47,7 +47,7 @@ Si querés probar en el colegio sin abrir VS Code, ejecutá **una vez** `npm run
 
 - `src/llt/` — máquina, animaciones y recorrido originales.
 - `src/interactive/solo.js` — selección individual.
-- `src/interactive/voting.js` — integración de votaciones/grupos y QR Wi-Fi.
+- `src/interactive/voting.js` — integración de votaciones y QR Wi-Fi.
 - `src/mobile/` — vista de votante y seguimiento.
 - `server/engine.js` y `server/plugin.js` — estado, temporizador, Socket.IO, permisos y persistencia.
 - `test/` — pruebas automáticas.

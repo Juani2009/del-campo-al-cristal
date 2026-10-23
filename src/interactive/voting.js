@@ -40,7 +40,7 @@ function buildResults(){
   resEl.innerHTML=`<div class="in">${resultView(choices)}</div>`;
   const button=$('backResult');if(button){button.textContent='Nueva sesión grupal';button.onclick=()=>{
     if(!admin){alert('Reiniciá la experiencia desde el panel de presentadora.');return;}
-    if(!confirm('¿Reiniciar todos los votos y grupos?'))return;
+    if(!confirm('¿Reiniciar todos los votos?'))return;
     socket.emit('llt:reset',{},r=>{if(!r?.ok)alert(r?.error||'No se pudo reiniciar');else scrollTo({top:0});});
   };}
   emit('llt:resultado',animationParams(computeResults(choices)));

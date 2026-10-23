@@ -18,9 +18,9 @@ CLARIFICADOR LLT — PRIMERA PRUEBA EN TU LENOVO
 11. Hacé scroll: se abren las votaciones en orden, sin bloquear la cámara.
 12. El panel privado está en http://localhost:5173/control.
 
-Con solo dos participantes, dos grupos quedan vacíos. Desde /control,
-abrí cada estación cuando le corresponda y elegí manualmente una opción
-para los grupos sin votos; el sistema distinguirá eso de una votación real.
+Todos los celulares conectados votan en las cuatro estaciones (no se
+reparten en grupos). Si una estación se cierra sin votos, desde /control
+elegí manualmente una opción; el sistema distinguirá eso de una votación real.
 
 Si algo no carga, mandame una captura de la TERMINAL COMPLETA
 para diagnosticarlo paso a paso.
